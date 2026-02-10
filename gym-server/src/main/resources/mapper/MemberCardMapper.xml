@@ -13,11 +13,17 @@
         <result column="expire_time" jdbcType="DATE" property="expireTime"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="user_real_name" jdbcType="VARCHAR" property="userRealName"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="user_phone" jdbcType="VARCHAR" property="userPhone"/>
+        <result column="member_type" jdbcType="VARCHAR" property="memberType"/>
+        <result column="free_quota_remaining" jdbcType="INTEGER" property="freeQuotaRemaining"/>
+        <result column="free_course_ids" jdbcType="VARCHAR" property="freeCourseIds"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
         member_card_id, user_id, avatar, member_fee, member_card_status, activate_time, expire_time,
-        create_time, update_time
+        create_time, update_time, user_real_name, sex, user_phone, member_type, free_quota_remaining, free_course_ids
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         <!--@mbg.generated-->
@@ -36,10 +42,11 @@
         <!--@mbg.generated-->
         insert into gym_member_cards (user_id, avatar, member_fee,
         member_card_status, activate_time, expire_time,
-        create_time, update_time)
+        create_time, update_time, member_type, free_quota_remaining, free_course_ids)
         values (#{userId,jdbcType=BIGINT}, #{avatar,jdbcType=VARCHAR}, #{memberFee,jdbcType=DECIMAL},
         #{memberCardStatus,jdbcType=CHAR}, #{activateTime,jdbcType=DATE}, #{expireTime,jdbcType=DATE},
-        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+        #{memberType,jdbcType=VARCHAR}, #{freeQuotaRemaining,jdbcType=INTEGER}, #{freeCourseIds,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" keyColumn="member_card_id" keyProperty="memberCardId"
             parameterType="com.sjdddd.entity.MemberCard" useGeneratedKeys="true">
@@ -70,6 +77,15 @@
             <if test="updateTime != null">
                 update_time,
             </if>
+            <if test="memberType != null">
+                member_type,
+            </if>
+            <if test="freeQuotaRemaining != null">
+                free_quota_remaining,
+            </if>
+            <if test="freeCourseIds != null">
+                free_course_ids,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">
@@ -95,6 +111,15 @@
             </if>
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memberType != null">
+                #{memberType,jdbcType=VARCHAR},
+            </if>
+            <if test="freeQuotaRemaining != null">
+                #{freeQuotaRemaining,jdbcType=INTEGER},
+            </if>
+            <if test="freeCourseIds != null">
+                #{freeCourseIds,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -122,6 +147,15 @@
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memberType != null">
+                member_type = #{memberType,jdbcType=VARCHAR},
+            </if>
+            <if test="freeQuotaRemaining != null">
+                free_quota_remaining = #{freeQuotaRemaining,jdbcType=INTEGER},
+            </if>
+            <if test="freeCourseIds != null">
+                free_course_ids = #{freeCourseIds,jdbcType=VARCHAR},
             </if>
         </set>
         where user_id = #{userId,jdbcType=BIGINT}
@@ -172,6 +206,19 @@
     <update id="updateBalanceByUserId">
         update gym_member_cards
         set member_fee = #{newBalance,jdbcType=DECIMAL}
+        where user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectByMemberCardId" resultMap="BaseResultMap">
+        select *
+        from gym_member_cards mc
+        join gym_users u on u.user_id = mc.user_id
+        where mc.user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <update id="updateFreeQuotaByUserId">
+        update gym_member_cards
+        set free_quota_remaining = #{freeQuota,jdbcType=INTEGER}
         where user_id = #{userId,jdbcType=BIGINT}
     </update>
 

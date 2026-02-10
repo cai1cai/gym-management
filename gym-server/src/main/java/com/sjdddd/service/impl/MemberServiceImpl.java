@@ -85,6 +85,20 @@ public class MemberServiceImpl implements MemberService {
         }
         memberCard.setActivateTime(LocalDateTime.now());
 
+        // 设置会员类型和免费次数
+        if (memberAddDTO.getMemberType() != null) {
+            memberCard.setMemberType(memberAddDTO.getMemberType());
+            // 如果是体验会员，设置默认免费次数
+            if ("2".equals(memberAddDTO.getMemberType())) {
+                memberCard.setFreeQuotaRemaining(3);
+            }
+        } else {
+            memberCard.setMemberType("1"); // 默认为普通会员
+        }
+
+        // 设置可免费享受的课程ID列表
+        memberCard.setFreeCourseIds(memberAddDTO.getFreeCourseIds());
+
 
         memberCardMapper.insert(memberCard);
         //userMapper.insertSelective()
@@ -97,7 +111,16 @@ public class MemberServiceImpl implements MemberService {
         MemberCard memberCard = new MemberCard();
 
         BeanUtils.copyProperties(memberEditDTO, memberCard);
-        //Long memberCardId = memberCard.getMemberCardId();
+
+        // 如果会员类型从普通会员改为体验会员，设置免费次数
+        if (memberEditDTO.getMemberType() != null) {
+            MemberCard existingMember = memberCardMapper.selectByPrimaryKey(memberEditDTO.getUserId());
+            if (existingMember != null && !"2".equals(existingMember.getMemberType())
+                && "2".equals(memberEditDTO.getMemberType())) {
+                // 从普通会员改为体验会员，初始化免费次数
+                memberCard.setFreeQuotaRemaining(3);
+            }
+        }
 
         memberCardMapper.updateByPrimaryKeySelective(memberCard);
 

@@ -41,4 +41,8 @@ public interface MemberCardMapper {
     BigDecimal selectByUserId(Object userId);
 
     void updateBalanceByUserId(Object userId, BigDecimal newBalance);
+
+    MemberCard selectByMemberCardId(Object userId);
+
+    void updateFreeQuotaByUserId(Object userId, int freeQuota);
 }

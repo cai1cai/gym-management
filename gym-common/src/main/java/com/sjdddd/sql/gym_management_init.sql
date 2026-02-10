@@ -32,16 +32,19 @@ CREATE TABLE gym_member_cards (
                                   member_card_status CHAR(1) DEFAULT '0' COMMENT '会员卡状态，0 未激活， 1 已激活， 2 已过期',
                                   activate_time DATE COMMENT '激活日期',
                                   expire_time DATE COMMENT '过期日期',
+                                  member_type VARCHAR(2) DEFAULT '1' COMMENT '会员类型：1-普通会员，2-体验会员',
+                                  free_quota_remaining INT DEFAULT 0 COMMENT '体验会员剩余免费次数',
+                                  free_course_ids VARCHAR(255) DEFAULT NULL COMMENT '可免费享受的课程ID列表，如"101,102,103"',
                                   create_time DATETIME COMMENT '创建时间',
                                   update_time DATETIME COMMENT '更新时间',
                                   PRIMARY KEY(member_card_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 COMMENT '会员表';
 
-INSERT INTO gym_member_cards (user_id, avatar, member_fee, activate_time, expire_time, create_time, update_time)
+INSERT INTO gym_member_cards (user_id, avatar, member_fee, member_card_status, activate_time, expire_time, member_type, free_quota_remaining, free_course_ids, create_time, update_time)
 VALUES
-    (101, 'avatar1.jpg', 50.00, '2023-01-01', '2023-12-31', NOW(), NOW()),
-    (102, 'avatar2.jpg', 75.50, '2023-02-15', '2023-11-30', NOW(), NOW()),
-    (103, 'avatar3.jpg', 100.00, '2023-03-10', '2024-03-10', NOW(), NOW());
+    (101, 'avatar1.jpg', 50.00, '1', '2023-01-01', '2023-12-31', '1', 0, NULL, NOW(), NOW()),
+    (102, 'avatar2.jpg', 75.50, '1', '2023-02-15', '2023-11-30', '2', 3, '101,102,103', NOW(), NOW()),
+    (103, 'avatar3.jpg', 100.00, '1', '2023-03-10', '2024-03-10', '1', 0, NULL, NOW(), NOW());
 
 
 DROP TABLE IF EXISTS gym_coachs;

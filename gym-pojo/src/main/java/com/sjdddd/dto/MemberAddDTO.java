@@ -29,4 +29,8 @@ public class MemberAddDTO implements java.io.Serializable{
     private BigDecimal memberFee;
 
     private String memberCardStatus;
+
+    private String memberType;
+
+    private String freeCourseIds;
 }

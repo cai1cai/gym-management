@@ -2,7 +2,6 @@ package com.sjdddd.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -90,4 +89,19 @@ public class MemberCard {
      * 手机号
      */
     private String userPhone;
+
+    /**
+     * 会员类型，1-普通会员，2-体验会员
+     */
+    private String memberType;
+
+    /**
+     * 体验会员剩余免费次数
+     */
+    private Integer freeQuotaRemaining;
+
+    /**
+     * 可免费享受的课程ID列表（逗号分隔）
+     */
+    private String freeCourseIds;
 }
