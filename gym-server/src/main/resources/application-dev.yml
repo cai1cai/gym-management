@@ -5,7 +5,7 @@ sjdddd:
     port: 3306
     database: gym-management
     username: root
-    password: shenjiadong1010
+    password: guess@lb1221LB
 
   alioss:
     access-key-id:
