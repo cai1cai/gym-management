@@ -2,6 +2,7 @@ package com.sjdddd.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.sjdddd.dto.CoachRevenueDTO;
 import com.sjdddd.entity.Bill;
 import com.sjdddd.entity.Course;
 import com.sjdddd.entity.Order;
@@ -10,9 +11,11 @@ import com.sjdddd.mapper.OrderMapper;
 import com.sjdddd.mapper.PaymentMapper;
 import com.sjdddd.result.PageResult;
 import com.sjdddd.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -20,6 +23,7 @@ import java.util.List;
  * @Description: TODO
  * @DateTime: 2023/11/25 23:11
  **/
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -75,5 +79,16 @@ public class OrderServiceImpl implements OrderService {
         return new PageResult(total, list);
     }
 
+    @Override
+    public List<CoachRevenueDTO> getCoachRevenue(Long coachId, String startDate, String endDate) {
+        log.info("查询教练收益统计, coachId:{}, startDate:{}, endDate:{}", coachId, startDate, endDate);
+        return orderMapper.selectCoachRevenue(coachId, startDate, endDate);
+    }
 
+    @Override
+    public BigDecimal getCoachTotalRevenue(Long coachId, String startDate, String endDate) {
+        log.info("查询教练总收益, coachId:{}, startDate:{}, endDate:{}", coachId, startDate, endDate);
+        BigDecimal total = orderMapper.selectCoachTotalRevenue(coachId, startDate, endDate);
+        return total != null ? total : BigDecimal.ZERO;
+    }
 }
