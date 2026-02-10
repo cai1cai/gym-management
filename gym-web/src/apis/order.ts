@@ -7,6 +7,11 @@ interface OrderList {
     courseName?: string
 }
 
+interface CoachRevenueParams {
+    coachId: number,
+    startDate?: string,
+    endDate?: string
+}
 
 export const getOrderListService = ({pageNum, pageSize}: OrderList) => {
     return request.get('/order/list', {
@@ -24,6 +29,32 @@ export const searchOrderService = ({pageNum, pageSize, courseName}: OrderList) =
             pageNum,
             pageSize,
             courseName
+        }
+    });
+};
+
+/**
+ * 查询教练收益统计
+ */
+export const getCoachRevenueService = ({coachId, startDate, endDate}: CoachRevenueParams) => {
+    return request.get('/order/coach/revenue', {
+        params: {
+            coachId,
+            startDate,
+            endDate
+        }
+    });
+};
+
+/**
+ * 查询教练总收益
+ */
+export const getCoachTotalRevenueService = ({coachId, startDate, endDate}: CoachRevenueParams) => {
+    return request.get('/order/coach/totalRevenue', {
+        params: {
+            coachId,
+            startDate,
+            endDate
         }
     });
 };

@@ -1,6 +1,7 @@
 package com.sjdddd.controller.admin;
 
 import com.sjdddd.annotation.OperationLog;
+import com.sjdddd.dto.CoachRevenueDTO;
 import com.sjdddd.dto.OrderListDTO;
 import com.sjdddd.result.PageResult;
 import com.sjdddd.result.Result;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -50,5 +52,29 @@ public class OrderController {
 
         return Result.success(pageResult);
 
+    }
+
+    @GetMapping("/coach/revenue")
+    @OperationLog(operDesc = "查询教练收益统计")
+    public Result<List<CoachRevenueDTO>> getCoachRevenue(
+            @RequestParam Long coachId,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
+        log.info("查询教练收益统计, coachId:{}, startDate:{}, endDate:{}", coachId, startDate, endDate);
+        List<CoachRevenueDTO> revenueList = orderService.getCoachRevenue(coachId, startDate, endDate);
+        return Result.success(revenueList);
+    }
+
+    @GetMapping("/coach/totalRevenue")
+    @OperationLog(operDesc = "查询教练总收益")
+    public Result<BigDecimal> getCoachTotalRevenue(
+            @RequestParam Long coachId,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
+        log.info("查询教练总收益, coachId:{}, startDate:{}, endDate:{}", coachId, startDate, endDate);
+        BigDecimal totalRevenue = orderService.getCoachTotalRevenue(coachId, startDate, endDate);
+        return Result.success(totalRevenue);
     }
 }

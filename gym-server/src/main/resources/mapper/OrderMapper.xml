@@ -86,4 +86,47 @@
         WHERE b.user_id = #{userId}
         ORDER BY b.booking_date DESC
     </select>
+
+    <!-- 按教练ID和时间范围统计课程收益 -->
+    <select id="selectCoachRevenue" resultType="com.sjdddd.dto.CoachRevenueDTO">
+        SELECT
+            c.course_id AS courseId,
+            c.course_name AS courseName,
+            c.schedule_start AS scheduleStart,
+            c.schedule_end AS scheduleEnd,
+            c.course_fee AS courseFee,
+            COUNT(DISTINCT b.booking_id) AS bookingCount,
+            SUM(p.amount) AS totalRevenue
+        FROM gym_courses c
+            LEFT JOIN gym_coachs co ON c.coach_id = co.coach_id
+            LEFT JOIN gym_booking b ON c.course_id = b.course_id
+            LEFT JOIN gym_payments p ON b.booking_id = p.booking_id
+            AND p.payment_status = '1'  <!-- 只统计已支付的订单 -->
+        WHERE co.coach_id = #{coachId}
+        <if test="startDate != null and startDate != ''">
+            AND DATE(c.schedule_start) &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(c.schedule_start) &lt;= #{endDate}
+        </if>
+        GROUP BY c.course_id, c.course_name, c.schedule_start, c.schedule_end, c.course_fee
+        ORDER BY c.schedule_start DESC
+    </select>
+
+    <!-- 统计教练总收益 -->
+    <select id="selectCoachTotalRevenue" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(p.amount), 0)
+        FROM gym_courses c
+            JOIN gym_coachs co ON c.coach_id = co.coach_id
+            JOIN gym_booking b ON c.course_id = b.course_id
+            JOIN gym_payments p ON b.booking_id = p.booking_id
+        WHERE co.coach_id = #{coachId}
+        AND p.payment_status = '1'  <!-- 只统计已支付的订单 -->
+        <if test="startDate != null and startDate != ''">
+            AND DATE(c.schedule_start) &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(c.schedule_start) &lt;= #{endDate}
+        </if>
+    </select>
 </mapper>
