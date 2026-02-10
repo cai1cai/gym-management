@@ -7,10 +7,18 @@ interface OrderList {
     courseName?: string
 }
 
+/**
+ * 教练收益查询参数（日期格式：YYYY-MM-DD）
+ */
 interface CoachRevenueParams {
     coachId: number,
     startDate?: string,
     endDate?: string
+}
+
+interface OrderCreate {
+    userId: number,
+    courseId: number
 }
 
 export const getOrderListService = ({pageNum, pageSize}: OrderList) => {
@@ -23,7 +31,6 @@ export const getOrderListService = ({pageNum, pageSize}: OrderList) => {
 };
 
 export const searchOrderService = ({pageNum, pageSize, courseName}: OrderList) => {
-    console.log(pageNum, pageSize, courseName)
     return request.get('/order/search', {
         params: {
             pageNum,
@@ -57,4 +64,11 @@ export const getCoachTotalRevenueService = ({coachId, startDate, endDate}: Coach
             endDate
         }
     });
+};
+
+/**
+ * 管理员替会员创建订单
+ */
+export const createOrderService = (data: OrderCreate) => {
+    return request.post('/order/create', data);
 };

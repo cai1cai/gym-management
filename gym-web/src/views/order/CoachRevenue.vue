@@ -162,15 +162,16 @@ const loading = ref(false);
 // 是否已搜索
 const hasSearched = ref(false);
 
+// 后端返回的总收益
+const backendTotalRevenue = ref(0);
+
 // 总预订数
 const totalBookings = computed(() => {
   return revenueList.value.reduce((sum, item) => sum + (item.bookingCount || 0), 0);
 });
 
-// 总收益
-const totalRevenue = computed(() => {
-  return revenueList.value.reduce((sum, item) => sum + (item.totalRevenue || 0), 0);
-});
+// 总收益（使用后端返回的值）
+const totalRevenue = computed(() => backendTotalRevenue.value);
 
 // 格式化日期
 const formatDate = (timestamp) => {
@@ -202,6 +203,16 @@ const handleSearch = async () => {
     return;
   }
 
+  // 日期范围校验
+  if (filterForm.value.startDate && filterForm.value.endDate) {
+    const start = new Date(filterForm.value.startDate);
+    const end = new Date(filterForm.value.endDate);
+    if (start > end) {
+      ElMessage.error('结束日期不能早于开始日期');
+      return;
+    }
+  }
+
   try {
     loading.value = true;
     hasSearched.value = true;
@@ -212,8 +223,14 @@ const handleSearch = async () => {
       endDate: filterForm.value.endDate
     };
 
-    const response = await getCoachRevenueService(params);
-    revenueList.value = response.data.data || [];
+    // 并发请求收益明细和总收益
+    const [revenueResponse, totalRevenueResponse] = await Promise.all([
+      getCoachRevenueService(params),
+      getCoachTotalRevenueService(params)
+    ]);
+
+    revenueList.value = revenueResponse.data.data || [];
+    backendTotalRevenue.value = totalRevenueResponse.data.data || 0;
 
     if (revenueList.value.length > 0) {
       ElMessage.success(`查询成功，共找到 ${revenueList.value.length} 条记录`);
@@ -236,6 +253,7 @@ const handleReset = () => {
     endDate: ''
   };
   revenueList.value = [];
+  backendTotalRevenue.value = 0;
   hasSearched.value = false;
 };
 
