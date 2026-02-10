@@ -95,13 +95,13 @@
             c.schedule_start AS scheduleStart,
             c.schedule_end AS scheduleEnd,
             c.course_fee AS courseFee,
-            COUNT(DISTINCT b.booking_id) AS bookingCount,
-            SUM(p.amount) AS totalRevenue
+            COUNT(b.booking_id) AS bookingCount,
+            COALESCE(SUM(p.amount), 0) AS totalRevenue
         FROM gym_courses c
-            LEFT JOIN gym_coachs co ON c.coach_id = co.coach_id
+            INNER JOIN gym_coachs co ON c.coach_id = co.coach_id
             LEFT JOIN gym_booking b ON c.course_id = b.course_id
             LEFT JOIN gym_payments p ON b.booking_id = p.booking_id
-            AND p.payment_status = '1'  <!-- 只统计已支付的订单 -->
+                AND p.payment_status = '1'  <!-- 只统计已支付的订单 -->
         WHERE co.coach_id = #{coachId}
         <if test="startDate != null and startDate != ''">
             AND DATE(c.schedule_start) &gt;= #{startDate}
@@ -117,11 +117,11 @@
     <select id="selectCoachTotalRevenue" resultType="java.math.BigDecimal">
         SELECT COALESCE(SUM(p.amount), 0)
         FROM gym_courses c
-            JOIN gym_coachs co ON c.coach_id = co.coach_id
-            JOIN gym_booking b ON c.course_id = b.course_id
-            JOIN gym_payments p ON b.booking_id = p.booking_id
+            INNER JOIN gym_coachs co ON c.coach_id = co.coach_id
+            INNER JOIN gym_booking b ON c.course_id = b.course_id
+            INNER JOIN gym_payments p ON b.booking_id = p.booking_id
+                AND p.payment_status = '1'  <!-- 只统计已支付的订单 -->
         WHERE co.coach_id = #{coachId}
-        AND p.payment_status = '1'  <!-- 只统计已支付的订单 -->
         <if test="startDate != null and startDate != ''">
             AND DATE(c.schedule_start) &gt;= #{startDate}
         </if>

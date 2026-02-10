@@ -2,6 +2,7 @@ package com.sjdddd.mapper;
 
 import com.sjdddd.dto.CoachRevenueDTO;
 import com.sjdddd.entity.Bill;
+import com.sjdddd.entity.Course;
 import com.sjdddd.entity.Order;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -1,6 +1,7 @@
 package com.sjdddd.service;
 
 import com.sjdddd.dto.CoachRevenueDTO;
+import com.sjdddd.dto.OrderCreateDTO;
 import com.sjdddd.dto.OrderListDTO;
 import com.sjdddd.result.PageResult;
 
@@ -37,4 +38,11 @@ public interface OrderService {
      * @return 总收益
      */
     BigDecimal getCoachTotalRevenue(Long coachId, String startDate, String endDate);
+
+    /**
+     * 管理员替会员创建订单
+     * @param orderCreateDTO 订单创建DTO
+     * @return 预订记录ID
+     */
+    Long createOrder(OrderCreateDTO orderCreateDTO);
 }

@@ -103,4 +103,9 @@ public class CoachServiceImpl implements CoachService {
 
         return new PageResult(total, list);
     }
+
+    @Override
+    public Coach getById(Long coachId) {
+        return coachMapper.selectByPrimaryKey(coachId);
+    }
 }
