@@ -52,19 +52,17 @@
 
     <!-- 分页 -->
     <div class="el-page">
-      <el-config-provider :locale="language">
-        <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="pagination.currentPage"
-            :page-sizes="[10, 20, 30, 40, 50]"
-            :page-size="pagination.pageSize"
-            :total="pagination.total"
-            :background="true"
-            layout="jumper, total, sizes, prev, pager, next"
-            style="margin-top: 20px;">
-        </el-pagination>
-      </el-config-provider>
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pagination.currentPage"
+          :page-sizes="[10, 20, 30, 40, 50]"
+          :page-size="pagination.pageSize"
+          :total="pagination.total"
+          :background="true"
+          layout="jumper, total, sizes, prev, pager, next"
+          style="margin-top: 20px;">
+      </el-pagination>
     </div>
 
     <!-- 新增订单对话框 -->
@@ -168,7 +166,6 @@
 import {ElMessage, ElMessageBox} from "element-plus";
 import {ref, onMounted} from "vue";
 import {Plus, Bell, Delete, Edit, Search} from "@element-plus/icons-vue";
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import {useRoute} from 'vue-router'
 import {getOrderListService, searchOrderService, createOrderService} from "@/apis/order";
 import {getMemberListService} from "@/apis/member";
@@ -177,7 +174,6 @@ import {getCourseListService} from "@/apis/course";
 const route = useRoute()
 
 const orders = ref([]);
-const language = ref(zhCn); // 定义语言
 const loading = ref(false); // 控制加载状态的显示
 
 // 对话框相关
