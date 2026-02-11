@@ -62,6 +62,10 @@
                   <el-icon><Shop /></el-icon>
                   <span>订单查询</span>
                 </el-menu-item>
+                <el-menu-item index="/order/coach/revenue">
+                  <el-icon><Money /></el-icon>
+                  <span>教练收益统计</span>
+                </el-menu-item>
                 <el-menu-item index="/log/list">
                   <el-icon><List /></el-icon>
                   <span>日志查询</span>
@@ -101,7 +105,7 @@ import {useUserStore} from '@/stores'
 import {onMounted} from 'vue'
 import {useRouter} from 'vue-router'
 import { useRoute } from 'vue-router'
-import {Crop, EditPen, SwitchButton, User} from "@element-plus/icons-vue";
+import {Crop, EditPen, SwitchButton, User, Money} from "@element-plus/icons-vue";
 import {ElMessageBox} from "element-plus";
 
 const route = useRoute()
