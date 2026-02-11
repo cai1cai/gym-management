@@ -187,8 +187,8 @@ const formatDate = (timestamp) => {
 // 获取教练列表
 const fetchCoachList = async () => {
   try {
-    const response = await getCoachListService();
-    coachList.value = response.data.data || [];
+    const response = await getCoachListService({ pageNum: 1, pageSize: 100 });
+    coachList.value = response.data.data.items || [];
   } catch (error) {
     console.error('获取教练列表失败:', error);
     ElMessage.error('获取教练列表失败');
