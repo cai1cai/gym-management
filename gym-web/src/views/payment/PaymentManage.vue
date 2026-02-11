@@ -25,19 +25,17 @@
 
     <!-- 分页组件 -->
     <div class="el-page">
-      <el-config-provider :locale="language">
-        <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="pagination.currentPage"
-            :page-sizes="[10, 20, 30, 40, 50]"
-            :page-size="pagination.pageSize"
-            :total="pagination.total"
-            :background="true"
-            layout="jumper, total, sizes, prev, pager, next"
-            style="margin-top: 20px;">
-        </el-pagination>
-      </el-config-provider>
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pagination.currentPage"
+          :page-sizes="[10, 20, 30, 40, 50]"
+          :page-size="pagination.pageSize"
+          :total="pagination.total"
+          :background="true"
+          layout="jumper, total, sizes, prev, pager, next"
+          style="margin-top: 20px;">
+      </el-pagination>
     </div>
   </el-card>
 
@@ -60,11 +58,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import {fetchBills, getBillListService, rechargeService} from '@/apis/bill'; // 获取账单数据
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import {getCourseListService} from "@/apis/course";
 import {ElMessage} from "element-plus";
 
-const language = ref(zhCn); // 定义语言
 const bills = ref([]);
 const pagination = ref({
   currentPage: 1,
