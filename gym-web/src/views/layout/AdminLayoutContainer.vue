@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <div>
-          <span>健身房会员管理系统</span>
+          <span>美容店会员管理系统</span>
         </div>
         <div>
           你好,<strong>{{
@@ -52,11 +52,11 @@
                 </el-menu-item>
                 <el-menu-item index="/coach/list">
                   <el-icon><BellFilled /></el-icon>
-                  <span>教练管理</span>
+                  <span>员工管理</span>
                 </el-menu-item>
                 <el-menu-item index="/course/list">
                   <el-icon><Platform /></el-icon>
-                  <span>课程管理</span>
+                  <span>项目管理</span>
                 </el-menu-item>
                 <el-menu-item index="/order/list">
                   <el-icon><Shop /></el-icon>
@@ -64,7 +64,7 @@
                 </el-menu-item>
                 <el-menu-item index="/order/coach/revenue">
                   <el-icon><Money /></el-icon>
-                  <span>教练收益统计</span>
+                  <span>员工收益统计</span>
                 </el-menu-item>
                 <el-menu-item index="/log/list">
                   <el-icon><List /></el-icon>

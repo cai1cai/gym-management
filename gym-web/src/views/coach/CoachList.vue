@@ -4,12 +4,12 @@
   <el-card class="page-container">
     <template #header>
       <div class="header">
-        <h2>教练列表</h2>
+        <h2>员工列表</h2>
         <div class="extra">
-          <el-input v-model="searchName" placeholder="请输入教练姓名" style="width: 200px;" :prefix-icon="Search"
+          <el-input v-model="searchName" placeholder="请输入员工姓名" style="width: 200px;" :prefix-icon="Search"
                     class="search-input"></el-input>
           <el-button type="primary" @click="searchCoach">搜索</el-button>
-          <el-button type="primary" @click="addCoach">添加教练</el-button>
+          <el-button type="primary" @click="addCoach">添加员工</el-button>
         </div>
       </div>
     </template>
@@ -18,8 +18,8 @@
     <router-view :key="route.fullPath"></router-view>
     <!-- 表单 -->
     <el-table v-loading="loading.value" :data="coachs" style="width: 100%">
-      <el-table-column prop="coachId" label="教练ID" width="150"></el-table-column>
-      <el-table-column prop="coachRealName" label="教练姓名" width="180"></el-table-column>
+      <el-table-column prop="coachId" label="员工ID" width="150"></el-table-column>
+      <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column>
       <el-table-column prop="coachSex" label="性别" width="150">
         <template #default="{ row }">
           {{ genderText(row.coachSex) }}
@@ -80,13 +80,13 @@
   </el-card>
 
 
-  <!-- 编辑教练信息对话框 -->
-  <el-dialog v-model="editDialogVisible" title="编辑教练信息">
+  <!-- 编辑员工信息对话框 -->
+  <el-dialog v-model="editDialogVisible" title="编辑员工信息">
     <el-form :model="editFormData">
-      <el-form-item label="教练ID" :label-width="formLabelWidth">
+      <el-form-item label="员工ID" :label-width="formLabelWidth">
         <el-input v-model="editFormData.coachId" disabled></el-input>
       </el-form-item>
-      <el-form-item label="教练姓名" :label-width="formLabelWidth">
+      <el-form-item label="员工姓名" :label-width="formLabelWidth">
         <el-input v-model="editFormData.coachRealName" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="性别" :label-width="formLabelWidth">
@@ -113,13 +113,13 @@
   </el-dialog>
 
 
-  <!-- 添加教练信息对话框 -->
-  <el-dialog v-model="addDialogVisible" title="添加教练信息">
+  <!-- 添加员工信息对话框 -->
+  <el-dialog v-model="addDialogVisible" title="添加员工信息">
     <el-form :model="addFormData">
-      <el-form-item label="教练ID" :label-width="formLabelWidth">
+      <el-form-item label="员工ID" :label-width="formLabelWidth">
         <el-input disabled placeholder="ID由系统自动生成"></el-input>
       </el-form-item>
-      <el-form-item label="教练姓名" :label-width="formLabelWidth">
+      <el-form-item label="员工姓名" :label-width="formLabelWidth">
         <el-input v-model="addFormData.coachRealName" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="性别" :label-width="formLabelWidth">
@@ -193,7 +193,7 @@ const formatDate = (timestamp) => {
   }).format(new Date(timestamp));
 };
 
-// 获取教练列表，并支持分页
+// 获取员工列表，并支持分页
 const fetchCoachs = async () => {
   try {
     loading.value = true;
@@ -208,7 +208,7 @@ const fetchCoachs = async () => {
     //console.log(pagination.value.total)
     loading.value = false;
   } catch (error) {
-    console.error('获取教练列表失败:', error);
+    console.error('获取员工列表失败:', error);
   }
 };
 
@@ -242,20 +242,20 @@ const handleEdit = (coachs) => {
 
 // 打开添加对话框
 const addCoach = () => {
-  console.log('添加教练');
+  console.log('添加员工');
   addDialogVisible.value = true; // 显示对话框
 };
 
 
-// 更新教练信息的逻辑
+// 更新员工信息的逻辑
 const updateCoachInfo = async () => {
-  console.log('更新教练信息', editFormData.value);
+  console.log('更新员工信息', editFormData.value);
   try {
     if (editFormData.value.coachRealName === undefined || editFormData.value.coachRealName === '') {
-      ElMessage.warning('请输入教练姓名');
+      ElMessage.warning('请输入员工姓名');
       return;
     } else if (!/^[\u4E00-\u9FA5]{2,10}/.test(editFormData.value.coachRealName)) {
-      ElMessage.warning('教练姓名格式不正确');
+      ElMessage.warning('员工姓名格式不正确');
       return;
     }
     if (editFormData.value.coachPhone === undefined || editFormData.value.coachPhone === '') {
@@ -271,9 +271,9 @@ const updateCoachInfo = async () => {
     }
 
     await editCoachService(editFormData.value);
-    ElMessage.success('教练信息更新成功');
+    ElMessage.success('员工信息更新成功');
   } catch (error) {
-    console.error('更新教练信息失败:', error);
+    console.error('更新员工信息失败:', error);
     ElMessage.error('更新失败');
   }
 
@@ -281,10 +281,10 @@ const updateCoachInfo = async () => {
   await fetchCoachs(); // 重新加载列表
 };
 
-// 删除教练
+// 删除员工
 const handleDelete = (coachs) => {
-  console.log('删除教练操作', coachs.coachRealName)
-  ElMessageBox.confirm(`确定删除教练 ${coachs.coachRealName} 吗?`, '警告', {
+  console.log('删除员工操作', coachs.coachRealName)
+  ElMessageBox.confirm(`确定删除员工 ${coachs.coachRealName} 吗?`, '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -294,10 +294,10 @@ const handleDelete = (coachs) => {
         try {
           await deleteCoachService({coachId: coachs.coachId});
         } catch (error) {
-          //console.error('删除教练失败:', error);
+          //console.error('删除员工失败:', error);
           ElMessage.error('删除失败');
         }
-        ElMessage.success('教练删除成功');
+        ElMessage.success('员工删除成功');
       })
       .catch(() => {
         // 用户取消删除
@@ -310,7 +310,7 @@ const handleDelete = (coachs) => {
 };
 
 
-// 添加教练
+// 添加员工
 const addNewCoach = async () => {
   try {
     const coachData = {
@@ -320,10 +320,10 @@ const addNewCoach = async () => {
       coachRemark: addFormData.value.coachRemark
     };
     if (coachData.coachRealName === undefined || coachData.coachRealName === '') {
-      ElMessage.warning('请输入教练姓名');
+      ElMessage.warning('请输入员工姓名');
       return;
     } else if (!/^[\u4E00-\u9FA5]{2,10}/.test(coachData.coachRealName)) {
-      ElMessage.warning('教练姓名格式不正确');
+      ElMessage.warning('员工姓名格式不正确');
       return;
     }
     if (coachData.coachPhone === undefined || coachData.coachPhone === '') {
@@ -337,22 +337,22 @@ const addNewCoach = async () => {
       ElMessage.warning('请选择性别');
       return;
     }
-    console.log('添加教练信息', coachData);
+    console.log('添加员工信息', coachData);
     await addCoachService(coachData);
-    ElMessage.success('教练添加成功');
+    ElMessage.success('员工添加成功');
 
     addFormData.value = {}; // 清空表单数据
     coachData.value = {};
 
     addDialogVisible.value = false;
-    await fetchCoachs(); // 重新加载教练列表
+    await fetchCoachs(); // 重新加载员工列表
   } catch (error) {
-    console.error('添加教练失败:', error);
+    console.error('添加员工失败:', error);
     ElMessage.error('添加失败');
   }
 };
 
-// 搜索教练
+// 搜索员工
 const searchName = ref('');
 const searchCoach = async () => {
   try {
@@ -360,9 +360,9 @@ const searchCoach = async () => {
     const pageNum = pagination.value.currentPage;
     const pageSize = pagination.value.pageSize;
     const response = await searchCoachService({pageNum, pageSize, coachRealName});
-    coachs.value = response.data.data.items; // 使用搜索结果更新教练列表
+    coachs.value = response.data.data.items; // 使用搜索结果更新员工列表
   } catch (error) {
-    console.error('搜索教练失败:', error);
+    console.error('搜索员工失败:', error);
   }
 };
 

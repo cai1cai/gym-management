@@ -280,7 +280,7 @@ watch(isRegister, () => {
           v-else
       >
         <el-form-item>
-          <h1>健身房会员管理系统 登录</h1>
+          <h1>美容店会员管理系统 登录</h1>
         </el-form-item>
         <el-form-item prop="username">
           <el-input

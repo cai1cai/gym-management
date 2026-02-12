@@ -3,9 +3,9 @@
   <el-card class="page-container">
     <template #header>
       <div class="header">
-        <h2>课程列表</h2>
+        <h2>项目列表</h2>
         <div class="extra">
-          <el-input v-model="searchName" placeholder="请输入课程名" style="width: 200px;" :prefix-icon="Search"
+          <el-input v-model="searchName" placeholder="请输入项目名" style="width: 200px;" :prefix-icon="Search"
                     class="search-input"></el-input>
           <el-button type="primary" @click="searchCourse">搜索</el-button>
         </div>
@@ -16,18 +16,18 @@
     <router-view :key="route.fullPath"></router-view>
     <!-- 表单 -->
     <el-table v-loading="loading.value" :data="courses" style="width: 100%">
-      <el-table-column prop="courseId" label="课程ID" width="150"></el-table-column>
-      <el-table-column prop="courseName" label="课程名" width="180"></el-table-column>
-      <el-table-column prop="coachId" label="教练ID" width="150"></el-table-column>
-      <el-table-column prop="coachRealName" label="教练姓名" width="180"></el-table-column>
-      <el-table-column prop="courseFee" label="金额/每课时" width="180"></el-table-column>
+      <el-table-column prop="courseId" label="项目ID" width="150"></el-table-column>
+      <el-table-column prop="courseName" label="项目名" width="180"></el-table-column>
+      <el-table-column prop="coachId" label="员工ID" width="150"></el-table-column>
+      <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column>
+      <el-table-column prop="courseFee" label="金额/每次" width="180"></el-table-column>
 
-      <el-table-column prop="scheduleStart" label="课程开始时间" width="180">
+      <el-table-column prop="scheduleStart" label="项目开始时间" width="180">
         <template #default="{ row }">
           {{ formatDate(row.scheduleStart) }}
         </template>
       </el-table-column>
-      <el-table-column prop="scheduleEnd" label="课程结束时间" width="180">
+      <el-table-column prop="scheduleEnd" label="项目结束时间" width="180">
         <template #default="{ row }">
           {{ formatDate(row.scheduleEnd) }}
         </template>
@@ -36,8 +36,8 @@
       <el-table-column label="操作" width="150" align="center" fixed="right">
         <template #default="{ row }">
           <el-button v-if="row.isEnrolledByOther === '1'" type="info" size="mini" disabled>已被预订</el-button>
-          <el-button v-else-if="row.isEnrolledByCurrentUser === '1'" type="warning" size="mini" @click="handleRefund(row)">退课</el-button>
-          <el-button v-else type="primary" size="mini" @click="handleEnroll(row)">报名</el-button>
+          <el-button v-else-if="row.isEnrolledByCurrentUser === '1'" type="warning" size="mini" @click="handleRefund(row)">退订</el-button>
+          <el-button v-else type="primary" size="mini" @click="handleEnroll(row)">预订</el-button>
         </template>
       </el-table-column>
 
@@ -115,7 +115,7 @@ const formatDate = (timestamp) => {
   }).format(new Date(timestamp));
 };
 
-// 获取课程列表，并支持分页
+// 获取项目列表，并支持分页
 const fetchCourses = async () => {
   try {
     loading.value = true;
@@ -130,14 +130,14 @@ const fetchCourses = async () => {
     //console.log(pagination.value.total)
     loading.value = false;
   } catch (error) {
-    console.error('获取课程列表失败:', error);
+    console.error('获取项目列表失败:', error);
   }
 };
 
 onMounted(fetchCourses);
 
 
-// 搜索课程
+// 搜索项目
 const searchName = ref('');
 const searchCourse = async () => {
   try {
@@ -147,7 +147,7 @@ const searchCourse = async () => {
     const response = await searchCourseService({pageNum, pageSize, courseName});
     courses.value = response.data.data.items; // 使用搜索结果更新列表
   } catch (error) {
-    console.error('搜索课程失败:', error);
+    console.error('搜索项目失败:', error);
   }
 };
 
@@ -162,7 +162,7 @@ const checkUserBalance = async (courseFee) => {
 
     console.log('userBalance', userBalance)
 
-    return userBalance >= courseFee; // 比较余额和课程费用
+    return userBalance >= courseFee; // 比较余额和项目费用
   } catch (error) {
     console.error('获取用户余额失败:', error);
     return false; // 出现错误时默认返回不足够
@@ -178,38 +178,38 @@ const payForCourse = async (courseId) => {
     const response = await payCourseFeeService(courseId);
     return response.data; // 返回支付结果
   } catch (error) {
-    console.error('支付课程费用失败:', error);
+    console.error('支付项目费用失败:', error);
     throw new Error('支付失败'); // 抛出错误，可在调用时进行处理
   }
 };
 
 // import { enrollInCourseService } from '@/apis/course';
-// // enrollCourseService 方法用于调用报名接口
+// // enrollCourseService 方法用于调用预订接口
 // const enrollCourseService = async (courseId) => {
 //   try {
-//     //处理课程报名
+//     //处理项目预订
 //     const response = await enrollInCourseService(courseId);
-//     return response.data; // 返回报名结果
+//     return response.data; // 返回预订结果
 //   } catch (error) {
-//     console.error('报名课程失败:', error);
-//     throw new Error('报名失败'); // 抛出错误，可在调用时进行处理
+//     console.error('预订项目失败:', error);
+//     throw new Error('预订失败'); // 抛出错误，可在调用时进行处理
 //   }
 // };
 
 
-// 报名
+// 预订
 const handleEnroll = async (courses) => {
   try {
     //console.log(courses)
 
-    // 检查课程能否报名
+    // 检查项目能否预订
     if (courses.isEnrolledByOther === '1') {
-      ElMessage.error('该课程已被其他会员报名');
+      ElMessage.error('该项目已被其他会员预订');
       return;
     }
 
     if (courses.scheduleStart < Date.now()) {
-      ElMessage.error('该课程已开始，无法报名');
+      ElMessage.error('该项目已开始，无法预订');
       return;
     }
 
@@ -224,18 +224,18 @@ const handleEnroll = async (courses) => {
       return;
     }
 
-    // 调用支付接口，然后报名
+    // 调用支付接口，然后预订
     await payForCourse(courses.courseId);
 
     console.log(courses.courseId)
     //await enrollCourseService(courses.courseId);
-    ElMessage.success('报名成功！');
+    ElMessage.success('预订成功！');
     //console.log(courses)
   } catch (error) {
-    console.error('报名失败:', error);
-    ElMessage.error('报名失败');
+    console.error('预订失败:', error);
+    ElMessage.error('预订失败');
   } finally {
-    // 无论报名成功还是失败，都要重新获取课程列表
+    // 无论预订成功还是失败，都要重新获取项目列表
     await fetchCourses();
   }
 };
@@ -245,35 +245,35 @@ const canRefund = (scheduleStart) => {
   return now < scheduleStart;
 };
 
-// 退课
+// 退订
 const handleRefund = async (courses) => {
   try {
-    // 检查是否可以退课（比如，检查当前时间是否在课程开始时间之前）
+    // 检查是否可以退订（比如，检查当前时间是否在项目开始时间之前）
     if (!canRefund(courses.scheduleStart)) {
-      ElMessage.warning('课程已开始，无法退课');
+      ElMessage.warning('项目已开始，无法退订');
       return;
     }
 
-    await ElMessageBox.confirm('确定要退课吗？', '退课确认', {
+    await ElMessageBox.confirm('确定要退订吗？', '退订确认', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning',
     });
 
-    //调用退款接口，然后退课
+    //调用退款接口，然后退订
     //await refundForCourse(course.courseId);
     await refundCourseService(courses.courseId);
-    ElMessage.success('退课成功！');
+    ElMessage.success('退订成功！');
     courses.isEnrolledByCurrrentUser = '0';
     await fetchCourses();
   } catch (error) {
-    // 用户点击了取消或退课过程中出现错误
+    // 用户点击了取消或退订过程中出现错误
     if (error !== 'cancel') {
-      console.error('退课失败:', error);
-      ElMessage.error('退课失败');
+      console.error('退订失败:', error);
+      ElMessage.error('退订失败');
     }
   } finally {
-    // 无论退课成功还是失败，都要重新获取课程列表
+    // 无论退订成功还是失败，都要重新获取项目列表
     await fetchCourses();
   }
 };

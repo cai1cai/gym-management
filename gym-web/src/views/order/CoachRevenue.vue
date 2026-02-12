@@ -2,17 +2,17 @@
   <el-card class="page-container">
     <template #header>
       <div class="header">
-        <h2>教练收益统计</h2>
+        <h2>员工收益统计</h2>
       </div>
     </template>
 
     <!-- 筛选区域 -->
     <div class="filter-section">
       <el-form :inline="true" :model="filterForm">
-        <el-form-item label="选择教练">
+        <el-form-item label="选择员工">
           <el-select
             v-model="filterForm.coachId"
-            placeholder="请选择教练"
+            placeholder="请选择员工"
             filterable
             clearable
             style="width: 200px"
@@ -64,7 +64,7 @@
         <el-col :span="8">
           <el-card class="summary-card">
             <div class="summary-item">
-              <div class="summary-label">课程总数</div>
+              <div class="summary-label">项目总数</div>
               <div class="summary-value">{{ revenueList.length }}</div>
             </div>
           </el-card>
@@ -95,9 +95,9 @@
       style="width: 100%; margin-top: 20px"
       border
     >
-      <el-table-column prop="courseId" label="课程ID" width="100" />
-      <el-table-column prop="courseName" label="课程名称" width="200" />
-      <el-table-column prop="courseFee" label="课程费用" width="120">
+      <el-table-column prop="courseId" label="项目ID" width="100" />
+      <el-table-column prop="courseName" label="项目名称" width="200" />
+      <el-table-column prop="courseFee" label="项目费用" width="120">
         <template #default="{ row }">
           ¥ {{ row.courseFee.toFixed(2) }}
         </template>
@@ -120,7 +120,7 @@
           <el-tag v-else type="info">0 人</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="totalRevenue" label="课程收益" width="150" align="right">
+      <el-table-column prop="totalRevenue" label="项目收益" width="150" align="right">
         <template #default="{ row }">
           <span class="revenue-amount">¥ {{ (row.totalRevenue || 0).toFixed(2) }}</span>
         </template>
@@ -143,7 +143,7 @@ import { ElMessage } from 'element-plus';
 import { getCoachRevenueService, getCoachTotalRevenueService } from '@/apis/order';
 import { getCoachListService } from '@/apis/coach';
 
-// 教练列表
+// 员工列表
 const coachList = ref([]);
 
 // 筛选表单
@@ -185,21 +185,21 @@ const formatDate = (timestamp) => {
   }).format(new Date(timestamp));
 };
 
-// 获取教练列表
+// 获取员工列表
 const fetchCoachList = async () => {
   try {
     const response = await getCoachListService({ pageNum: 1, pageSize: 100 });
     coachList.value = response.data.data.items || [];
   } catch (error) {
-    console.error('获取教练列表失败:', error);
-    ElMessage.error('获取教练列表失败');
+    console.error('获取员工列表失败:', error);
+    ElMessage.error('获取员工列表失败');
   }
 };
 
 // 查询收益统计
 const handleSearch = async () => {
   if (!filterForm.value.coachId) {
-    ElMessage.warning('请选择教练');
+    ElMessage.warning('请选择员工');
     return;
   }
 
@@ -237,10 +237,10 @@ const handleSearch = async () => {
     } else {
       ElMessage.info('暂无相关数据');
     }
-  } catch (error) {
-    console.error('查询教练收益失败:', error);
+    } catch (error) {
+    console.error('查询员工收益失败:', error);
     ElMessage.error('查询失败');
-  } finally {
+    } finally {
     loading.value = false;
   }
 };
@@ -257,13 +257,13 @@ const handleReset = () => {
   hasSearched.value = false;
 };
 
-// 教练变化时清空结果
+// 员工变化时清空结果
 const handleCoachChange = () => {
   revenueList.value = [];
   hasSearched.value = false;
 };
 
-// 页面加载时获取教练列表
+// 页面加载时获取员工列表
 onMounted(() => {
   fetchCoachList();
 });

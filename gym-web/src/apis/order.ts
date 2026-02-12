@@ -8,7 +8,7 @@ interface OrderList {
 }
 
 /**
- * 教练收益查询参数（日期格式：YYYY-MM-DD）
+ * 员工收益查询参数（日期格式：YYYY-MM-DD）
  */
 interface CoachRevenueParams {
     coachId: number,
@@ -41,7 +41,7 @@ export const searchOrderService = ({pageNum, pageSize, courseName}: OrderList) =
 };
 
 /**
- * 查询教练收益统计
+ * 查询员工收益统计
  */
 export const getCoachRevenueService = ({coachId, startDate, endDate}: CoachRevenueParams) => {
     return request.get('/order/coach/revenue', {
@@ -54,7 +54,7 @@ export const getCoachRevenueService = ({coachId, startDate, endDate}: CoachReven
 };
 
 /**
- * 查询教练总收益
+ * 查询员工总收益
  */
 export const getCoachTotalRevenueService = ({coachId, startDate, endDate}: CoachRevenueParams) => {
     return request.get('/order/coach/totalRevenue', {

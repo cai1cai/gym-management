@@ -8,7 +8,7 @@
           <el-button type="primary" @click="handleAddOrder">
             <el-icon><Plus /></el-icon> 新增订单
           </el-button>
-          <el-input v-model="searchName" placeholder="请输入课程名" style="width: 200px;" :prefix-icon="Search"
+          <el-input v-model="searchName" placeholder="请输入项目名" style="width: 200px;" :prefix-icon="Search"
                     class="search-input"></el-input>
           <el-button type="primary" @click="searchOrder">搜索</el-button>
         </div>
@@ -20,9 +20,9 @@
     <!-- 表单 -->
     <el-table v-loading="loading.value" :data="orders" style="width: 100%">
       <el-table-column prop="bookingId" label="预定ID" width="150"></el-table-column>
-      <el-table-column prop="courseName" label="课程名" width="180"></el-table-column>
+      <el-table-column prop="courseName" label="项目名" width="180"></el-table-column>
       <el-table-column prop="userRealName" label="用户姓名" width="180"></el-table-column>
-      <el-table-column prop="coachRealName" label="教练姓名" width="180"></el-table-column>
+      <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column>
       <el-table-column prop="paymentId" label="支付ID" width="150"></el-table-column>
       <el-table-column prop="paymentType" label="支付方式" width="150"></el-table-column>
       <el-table-column prop="paymentStatus" label="支付状态" width="150">
@@ -90,10 +90,10 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="选择课程" prop="courseId">
+        <el-form-item label="选择项目" prop="courseId">
           <el-select
             v-model="orderForm.courseId"
-            placeholder="请选择课程"
+            placeholder="请选择项目"
             filterable
             style="width: 100%"
             @change="handleCourseChange"
@@ -117,7 +117,7 @@
 
         <el-divider />
 
-        <el-form-item label="课程费用">
+        <el-form-item label="项目费用">
           <span style="font-size: 18px; font-weight: bold; color: #f56c6c">
             ¥ {{ selectedCourseFee || '0.00' }}
           </span>
@@ -146,7 +146,7 @@
           :closable="false"
           style="margin-bottom: 20px"
         >
-          会员余额充足，可以正常预约
+          会员余额充足，可以正常预订
         </el-alert>
       </el-form>
 
@@ -188,16 +188,16 @@ const orderForm = ref({
 
 const orderRules = {
   userId: [{ required: true, message: '请选择会员', trigger: 'change' }],
-  courseId: [{ required: true, message: '请选择课程', trigger: 'change' }]
+  courseId: [{ required: true, message: '请选择项目', trigger: 'change' }]
 };
 
 // 会员列表
 const memberList = ref([]);
 
-// 课程列表
+// 项目列表
 const courseList = ref([]);
 
-// 选中的课程费用
+// 选中的项目费用
 const selectedCourseFee = ref(0);
 
 // 会员余额
@@ -296,13 +296,13 @@ const fetchMemberList = async () => {
   }
 };
 
-// 获取课程列表
+// 获取项目列表
 const fetchCourseList = async () => {
   try {
     const response = await getCourseListService({ pageNum: 1, pageSize: 100 });
     courseList.value = response.data.data.items || [];
   } catch (error) {
-    console.error('获取课程列表失败:', error);
+    console.error('获取项目列表失败:', error);
   }
 };
 
@@ -316,7 +316,7 @@ const handleAddOrder = () => {
   memberBalance.value = 0;
   dialogVisible.value = true;
 
-  // 加载会员和课程列表
+  // 加载会员和项目列表
   fetchMemberList();
   fetchCourseList();
 };
@@ -329,7 +329,7 @@ const handleMemberChange = (userId) => {
   }
 };
 
-// 课程变化
+// 项目变化
 const handleCourseChange = (courseId) => {
   const course = courseList.value.find(c => c.courseId === courseId);
   if (course) {
