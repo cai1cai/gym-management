@@ -12,7 +12,7 @@
     <!-- 表格展示账单数据 -->
     <el-table :data="bills" style="width: 100%">
       <el-table-column prop="paymentId" label="账单ID" width="180"></el-table-column>
-      <el-table-column prop="courseName" label="课程名" width="200"></el-table-column>
+      <el-table-column prop="courseName" label="项目名" width="200"></el-table-column>
       <el-table-column prop="paymentDate" label="日期时间" width="180">
         <template #default="{ row }">
           {{ formatDate(row.paymentDate) }}

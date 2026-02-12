@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <div>
-          <span>健身房会员端</span>
+          <span>美容店会员端</span>
         </div>
         <div>
           你好,<strong>{{
@@ -40,7 +40,7 @@
               >
                 <el-menu-item index="/member/course/list">
                   <el-icon><Platform /></el-icon>
-                  <span>课程管理</span>
+                  <span>项目管理</span>
                 </el-menu-item>
                 <el-menu-item index="/member/payment/manage">
                   <el-icon><Money /></el-icon>
