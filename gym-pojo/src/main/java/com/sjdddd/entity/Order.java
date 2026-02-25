@@ -43,13 +43,7 @@ public class Order implements Serializable{
 
     private String userId;
 
+    private String coachId;
+
     private String coachRealName;
-
-    public String getCoachRealName() {
-        return coachRealName;
-    }
-
-    public void setCoachRealName(String coachRealName) {
-        this.coachRealName = coachRealName;
-    }
 }

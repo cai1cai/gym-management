@@ -39,6 +39,8 @@ public interface CourseMapper {
 
     BigDecimal selectCoursePrice(Long courseId);
 
+    Long selectCoachIdByCourseId(Long courseId);
+
     void updateCourseStatus(Long courseId);
 
     String selectCourseStatus(Long courseId);

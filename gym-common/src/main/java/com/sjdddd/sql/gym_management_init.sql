@@ -92,16 +92,20 @@ CREATE TABLE gym_booking (
                              booking_id BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT '预定id',
                              user_id BIGINT(20) NOT NULL COMMENT '用户id',
                              course_id BIGINT(20) NOT NULL COMMENT '课程id',
+                             coach_id BIGINT(20) NOT NULL COMMENT '教练id',
                              booking_date DATETIME COMMENT '预定日期时间',
                              isEnrolledByCurrentUser CHAR(1) DEFAULT '0' COMMENT '是否为当前用户预定，0 否， 1 是',
-                             PRIMARY KEY(booking_id)
+                             PRIMARY KEY(booking_id),
+                             CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES gym_users(user_id),
+                             CONSTRAINT fk_booking_course FOREIGN KEY (course_id) REFERENCES gym_courses(course_id),
+                             CONSTRAINT fk_booking_coach FOREIGN KEY (coach_id) REFERENCES gym_coachs(coach_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 COMMENT '预定表';
 
-INSERT INTO gym_booking (user_id, course_id, booking_date)
+INSERT INTO gym_booking (user_id, course_id, coach_id, booking_date)
 VALUES
-    (101, 101, '2023-01-10 09:00:00'),
-    (102, 102, '2023-02-15 17:30:00'),
-    (103, 103, '2023-03-20 13:45:00');
+    (101, 101, 101, '2023-01-10 09:00:00'),
+    (102, 102, 102, '2023-02-15 17:30:00'),
+    (103, 103, 103, '2023-03-20 13:45:00');
 
 
 DROP TABLE IF EXISTS gym_payments;

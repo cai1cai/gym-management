@@ -7,12 +7,13 @@
         <id column="booking_id" jdbcType="BIGINT" property="bookingId"/>
         <result column="user_id" jdbcType="BIGINT" property="userId"/>
         <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="coach_id" jdbcType="BIGINT" property="coachId"/>
         <result column="booking_date" jdbcType="TIMESTAMP" property="bookingDate"/>
         <result column="isEnrolledByCurrentUser" jdbcType="CHAR" property="isEnrolledByCurrentUser"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        booking_id, user_id, course_id, booking_date, isEnrolledByCurrentUser
+        booking_id, user_id, course_id, coach_id, booking_date, isEnrolledByCurrentUser
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         <!--@mbg.generated-->
@@ -42,9 +43,9 @@
     <insert id="insert" keyColumn="booking_id" keyProperty="bookingId" parameterType="com.sjdddd.entity.Booking"
             useGeneratedKeys="true">
         <!--@mbg.generated-->
-        insert into gym_booking (user_id, course_id, booking_date, isEnrolledByCurrentUser
+        insert into gym_booking (user_id, course_id, coach_id, booking_date, isEnrolledByCurrentUser
         )
-        values (#{userId,jdbcType=BIGINT}, #{courseId,jdbcType=BIGINT}, #{bookingDate,jdbcType=TIMESTAMP}, #{isEnrolledByCurrentUser,jdbcType=CHAR})
+        values (#{userId,jdbcType=BIGINT}, #{courseId,jdbcType=BIGINT}, #{coachId,jdbcType=BIGINT}, #{bookingDate,jdbcType=TIMESTAMP}, #{isEnrolledByCurrentUser,jdbcType=CHAR})
     </insert>
     <insert id="insertSelective" keyColumn="booking_id" keyProperty="bookingId"
             parameterType="com.sjdddd.entity.Booking" useGeneratedKeys="true">
@@ -56,6 +57,9 @@
             </if>
             <if test="courseId != null">
                 course_id,
+            </if>
+            <if test="coachId != null">
+                coach_id,
             </if>
             <if test="bookingDate != null">
                 booking_date,
@@ -70,6 +74,9 @@
             </if>
             <if test="courseId != null">
                 #{courseId,jdbcType=BIGINT},
+            </if>
+            <if test="coachId != null">
+                #{coachId,jdbcType=BIGINT},
             </if>
             <if test="bookingDate != null">
                 #{bookingDate,jdbcType=TIMESTAMP},
@@ -89,6 +96,9 @@
             <if test="courseId != null">
                 course_id = #{courseId,jdbcType=BIGINT},
             </if>
+            <if test="coachId != null">
+                coach_id = #{coachId,jdbcType=BIGINT},
+            </if>
             <if test="bookingDate != null">
                 booking_date = #{bookingDate,jdbcType=TIMESTAMP},
             </if>
@@ -103,6 +113,7 @@
         update gym_booking
         set user_id = #{userId,jdbcType=BIGINT},
         course_id = #{courseId,jdbcType=BIGINT},
+        coach_id = #{coachId,jdbcType=BIGINT},
         booking_date = #{bookingDate,jdbcType=TIMESTAMP},
         isEnrolledByCurrentUser = #{isEnrolledByCurrentUser,jdbcType=CHAR}
         where booking_id = #{bookingId,jdbcType=BIGINT}

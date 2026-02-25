@@ -29,12 +29,18 @@ import java.util.List;
 
 /**
  * @Author: 沈佳栋
- * @Description: TODO
+ * @Description: 订单服务实现类
  * @DateTime: 2023/11/25 23:11
  **/
 @Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
+
+    private static final String TRIAL_MEMBER_TYPE = "2";
+    private static final String PAYMENT_TYPE_ADMIN_BOOKING = "管理员代预订";
+    private static final String PAYMENT_TYPE_TRIAL_FREE = "体验会员免费预订";
+    private static final String PAYMENT_STATUS_PAID = "1";
+    private static final String BOOKING_STATUS_ENROLLED = "1";
 
     @Autowired
     private BookingMapper bookingMapper;
@@ -110,7 +116,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Long createOrder(OrderCreateDTO orderCreateDTO) {
-        log.info("管理员替会员创建订单: userId={}, courseId={}", orderCreateDTO.getUserId(), orderCreateDTO.getCourseId());
+        log.info("管理员替会员创建订单: userId={}, courseId={}, coachId={}",
+                 orderCreateDTO.getUserId(), orderCreateDTO.getCourseId(), orderCreateDTO.getCoachId());
 
         // 1. 获取课程信息
         Course course = courseMapper.selectByPrimaryKey(orderCreateDTO.getCourseId());
@@ -131,24 +138,10 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 4. 判断是否为体验会员且可以免费预订
-        boolean isFreeBooking = false;
-        if ("2".equals(memberCard.getMemberType()) && memberCard.getFreeQuotaRemaining() != null && memberCard.getFreeQuotaRemaining() > 0) {
-            // 检查该课程是否在可免费享受的课程列表中
-            String freeCourseIds = memberCard.getFreeCourseIds();
-            if (freeCourseIds != null && !freeCourseIds.isEmpty()) {
-                String[] courseIdArray = freeCourseIds.split(",");
-                for (String courseId : courseIdArray) {
-                    if (String.valueOf(orderCreateDTO.getCourseId()).equals(courseId.trim())) {
-                        isFreeBooking = true;
-                        log.info("体验会员免费预订，剩余免费次数: {}", memberCard.getFreeQuotaRemaining() - 1);
-                        break;
-                    }
-                }
-            }
-        }
+        boolean isFreeBooking = isTrialMemberFreeBooking(memberCard, orderCreateDTO.getCourseId());
 
         BigDecimal actualAmount = course.getCourseFee();
-        String paymentType = "管理员代预订";
+        String paymentType = PAYMENT_TYPE_ADMIN_BOOKING;
 
         // 5. 如果不是免费预订，检查余额是否充足
         if (!isFreeBooking) {
@@ -162,32 +155,77 @@ public class OrderServiceImpl implements OrderService {
             memberCardMapper.updateBalanceByUserId(orderCreateDTO.getUserId(), newBalance);
         } else {
             // 免费预订，扣减免费次数
-            paymentType = "体验会员免费预订";
+            paymentType = PAYMENT_TYPE_TRIAL_FREE;
             int newFreeQuota = memberCard.getFreeQuotaRemaining() - 1;
             memberCardMapper.updateFreeQuotaByUserId(orderCreateDTO.getUserId(), newFreeQuota);
             actualAmount = BigDecimal.ZERO;
         }
 
         // 6. 创建预订记录
-        Booking booking = new Booking();
-        booking.setUserId(orderCreateDTO.getUserId());
-        booking.setCourseId(orderCreateDTO.getCourseId());
-        booking.setBookingDate(new Date());
-        booking.setIsEnrolledByCurrentUser("1");
-        bookingMapper.insert(booking);
+        Booking booking = createBooking(orderCreateDTO);
 
         // 7. 创建支付记录
-        Payment payment = new Payment();
-        payment.setUserId(orderCreateDTO.getUserId());
-        payment.setBookingId(booking.getBookingId());
-        payment.setAmount(actualAmount);
-        payment.setPaymentType(paymentType);
-        payment.setPaymentStatus("1");
-        payment.setPaymentDate(new Date());
-        paymentMapper.insert(payment);
+        createPayment(orderCreateDTO, booking, actualAmount, paymentType);
 
         log.info("订单创建成功，预订ID: {}，支付类型: {}，金额: {}",
                  booking.getBookingId(), paymentType, actualAmount);
         return booking.getBookingId();
+    }
+
+    /**
+     * 判断体验会员是否可以免费预订课程
+     */
+    private boolean isTrialMemberFreeBooking(MemberCard memberCard, Long courseId) {
+        if (!TRIAL_MEMBER_TYPE.equals(memberCard.getMemberType())) {
+            return false;
+        }
+
+        if (memberCard.getFreeQuotaRemaining() == null || memberCard.getFreeQuotaRemaining() <= 0) {
+            return false;
+        }
+
+        String freeCourseIds = memberCard.getFreeCourseIds();
+        if (freeCourseIds == null || freeCourseIds.isEmpty()) {
+            return false;
+        }
+
+        String[] courseIdArray = freeCourseIds.split(",");
+        for (String freeCourseId : courseIdArray) {
+            if (String.valueOf(courseId).equals(freeCourseId.trim())) {
+                log.info("体验会员免费预订，剩余免费次数: {}", memberCard.getFreeQuotaRemaining() - 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 创建预订记录
+     */
+    private Booking createBooking(OrderCreateDTO orderCreateDTO) {
+        Booking booking = new Booking();
+        booking.setUserId(orderCreateDTO.getUserId());
+        booking.setCourseId(orderCreateDTO.getCourseId());
+        booking.setCoachId(orderCreateDTO.getCoachId());
+        booking.setBookingDate(new Date());
+        booking.setIsEnrolledByCurrentUser(BOOKING_STATUS_ENROLLED);
+        bookingMapper.insert(booking);
+        return booking;
+    }
+
+    /**
+     * 创建支付记录
+     */
+    private Payment createPayment(OrderCreateDTO orderCreateDTO, Booking booking,
+                                  BigDecimal amount, String paymentType) {
+        Payment payment = new Payment();
+        payment.setUserId(orderCreateDTO.getUserId());
+        payment.setBookingId(booking.getBookingId());
+        payment.setAmount(amount);
+        payment.setPaymentType(paymentType);
+        payment.setPaymentStatus(PAYMENT_STATUS_PAID);
+        payment.setPaymentDate(new Date());
+        paymentMapper.insert(payment);
+        return payment;
     }
 }

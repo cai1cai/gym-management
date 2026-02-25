@@ -72,8 +72,9 @@
       width="600px"
       :close-on-click-modal="false"
     >
-      <el-form :model="orderForm" :rules="orderRules" ref="orderFormRef" label-width="100px">
-        <el-form-item label="选择会员" prop="userId">
+      <div v-loading="dataLoading" style="min-height: 200px;">
+        <el-form :model="orderForm" :rules="orderRules" ref="orderFormRef" label-width="100px">
+          <el-form-item label="选择会员" prop="userId">
           <el-select
             v-model="orderForm.userId"
             placeholder="请选择会员"
@@ -101,15 +102,40 @@
             <el-option
               v-for="course in courseList"
               :key="course.courseId"
-              :label="`${course.courseName} - ${course.coachRealName} (¥${course.courseFee})`"
+              :label="`${course.courseName} (¥${course.courseFee})`"
               :value="course.courseId"
             >
               <div>
                 <span>{{ course.courseName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ course.coachRealName }}</span>
               </div>
               <div style="font-size: 12px; color: #909399">
                 费用: ¥{{ course.courseFee }} | 时间: {{ formatDateShort(course.scheduleStart) }}
+              </div>
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="选择员工" prop="coachId">
+          <el-select
+            v-model="orderForm.coachId"
+            placeholder="请选择员工"
+            filterable
+            style="width: 100%"
+          >
+            <el-option
+              v-for="coach in coachList"
+              :key="coach.coachId"
+              :label="coach.coachRealName"
+              :value="coach.coachId"
+            >
+              <div>
+                <span>{{ coach.coachRealName }}</span>
+                <span v-if="coach.coachPhone" style="float: right; color: #8492a6; font-size: 13px">
+                  {{ coach.coachPhone }}
+                </span>
+              </div>
+              <div v-if="coach.coachRemark" style="font-size: 12px; color: #909399">
+                {{ coach.coachRemark }}
               </div>
             </el-option>
           </el-select>
@@ -148,7 +174,8 @@
         >
           会员余额充足，可以正常预订
         </el-alert>
-      </el-form>
+        </el-form>
+      </div>
 
       <template #footer>
         <span class="dialog-footer">
@@ -170,6 +197,7 @@ import {useRoute} from 'vue-router'
 import {getOrderListService, searchOrderService, createOrderService} from "@/apis/order";
 import {getMemberListService} from "@/apis/member";
 import {getCourseListService} from "@/apis/course";
+import {getCoachListService} from "@/apis/coach";
 
 const route = useRoute()
 
@@ -183,12 +211,14 @@ const orderFormRef = ref();
 
 const orderForm = ref({
   userId: null,
-  courseId: null
+  courseId: null,
+  coachId: null
 });
 
 const orderRules = {
   userId: [{ required: true, message: '请选择会员', trigger: 'change' }],
-  courseId: [{ required: true, message: '请选择项目', trigger: 'change' }]
+  courseId: [{ required: true, message: '请选择项目', trigger: 'change' }],
+  coachId: [{ required: true, message: '请选择员工', trigger: 'change' }]
 };
 
 // 会员列表
@@ -196,6 +226,12 @@ const memberList = ref([]);
 
 // 项目列表
 const courseList = ref([]);
+
+// 员工列表
+const coachList = ref([]);
+
+// 加载数据状态
+const dataLoading = ref(false);
 
 // 选中的项目费用
 const selectedCourseFee = ref(0);
@@ -306,19 +342,46 @@ const fetchCourseList = async () => {
   }
 };
 
+// 获取员工列表
+const fetchCoachList = async () => {
+  try {
+    const response = await getCoachListService({ pageNum: 1, pageSize: 100 });
+    coachList.value = response.data.data.items || [];
+  } catch (error) {
+    console.error('获取员工列表失败:', error);
+  }
+};
+
 // 打开新增订单对话框
 const handleAddOrder = () => {
   orderForm.value = {
     userId: null,
-    courseId: null
+    courseId: null,
+    coachId: null
   };
   selectedCourseFee.value = 0;
   memberBalance.value = 0;
   dialogVisible.value = true;
 
-  // 加载会员和项目列表
-  fetchMemberList();
-  fetchCourseList();
+  // 加载会员、项目和员工列表
+  loadFormData();
+};
+
+// 加载表单所需的所有数据
+const loadFormData = async () => {
+  try {
+    dataLoading.value = true;
+    await Promise.all([
+      fetchMemberList(),
+      fetchCourseList(),
+      fetchCoachList()
+    ]);
+  } catch (error) {
+    console.error('加载表单数据失败:', error);
+    ElMessage.error('加载表单数据失败，请重试');
+  } finally {
+    dataLoading.value = false;
+  }
 };
 
 // 会员变化
@@ -340,7 +403,12 @@ const handleCourseChange = (courseId) => {
 // 提交订单
 const submitOrder = async () => {
   // 表单验证
-  await orderFormRef.value.validate();
+  try {
+    await orderFormRef.value.validate();
+  } catch (error) {
+    ElMessage.warning('请完善表单信息');
+    return;
+  }
 
   // 检查余额是否充足
   if (memberBalance.value < selectedCourseFee.value) {
@@ -353,7 +421,8 @@ const submitOrder = async () => {
 
     await createOrderService({
       userId: orderForm.value.userId,
-      courseId: orderForm.value.courseId
+      courseId: orderForm.value.courseId,
+      coachId: orderForm.value.coachId
     });
 
     ElMessage.success('订单创建成功');
@@ -363,7 +432,8 @@ const submitOrder = async () => {
     fetchOrders();
   } catch (error) {
     console.error('创建订单失败:', error);
-    ElMessage.error(error.response?.data?.msg || '创建订单失败');
+    const errorMsg = error.response?.data?.msg || error.message || '创建订单失败';
+    ElMessage.error(errorMsg);
   } finally {
     submitLoading.value = false;
   }

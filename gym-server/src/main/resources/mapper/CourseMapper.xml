@@ -165,6 +165,13 @@
         from gym_courses
         where course_id = #{courseId, jdbcType=BIGINT}
     </select>
+
+    <select id="selectCoachIdByCourseId" resultType="java.lang.Long">
+        select coach_id
+        from gym_courses
+        where course_id = #{courseId, jdbcType=BIGINT}
+    </select>
+
     <select id="selectAllMember" resultType="com.sjdddd.dto.CourseWithEnrollmentStatusDTO">
         SELECT
             course.*,

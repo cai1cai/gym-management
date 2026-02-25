@@ -56,9 +56,13 @@ public class PaymentServiceImpl implements PaymentService {
 
         if (balance.compareTo(courseFee) >= 0) {
             // 用户余额足够，处理支付
+            // 获取课程的教练ID
+            Long coachId = courseMapper.selectCoachIdByCourseId(courseId);
+
             Booking booking = new Booking();
             booking.setCourseId(courseId);
             booking.setUserId(userId);
+            booking.setCoachId(coachId);
             booking.setBookingDate(new java.util.Date());
             booking.setIsEnrolledByCurrentUser("1");
             log.info("booking:{}", booking);
