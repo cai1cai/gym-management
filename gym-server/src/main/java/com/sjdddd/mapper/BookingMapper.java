@@ -4,6 +4,7 @@ import com.sjdddd.annotation.AutoFill;
 import com.sjdddd.entity.Booking;
 import com.sjdddd.enumeration.OperationType;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @Author: 沈佳栋
@@ -29,7 +30,7 @@ public interface BookingMapper {
 
     String selectCourseStatus(Long courseId);
 
-    Booking selectByUserIdAndCourseId(Object userId, Long courseId);
+    Booking selectByUserIdAndCourseId(@Param("userId") Object userId, @Param("courseId") Long courseId);
 
     void delete(Booking booking);
 

@@ -39,6 +39,11 @@ public class Booking {
     private Long courseId;
 
     /**
+    * 教练id
+    */
+    private Long coachId;
+
+    /**
     * 预定日期时间
     */
     //@ApiModelProperty(value="预定日期时间")

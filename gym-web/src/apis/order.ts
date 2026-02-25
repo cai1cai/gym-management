@@ -18,7 +18,8 @@ interface CoachRevenueParams {
 
 interface OrderCreate {
     userId: number,
-    courseId: number
+    courseId: number,
+    coachId: number
 }
 
 export const getOrderListService = ({pageNum, pageSize}: OrderList) => {

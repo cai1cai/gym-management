@@ -135,6 +135,7 @@ public class OrderServiceImpl implements OrderService {
         Booking booking = new Booking();
         booking.setUserId(orderCreateDTO.getUserId());
         booking.setCourseId(orderCreateDTO.getCourseId());
+        booking.setCoachId(orderCreateDTO.getCoachId());
         booking.setBookingDate(new Date());
         booking.setIsEnrolledByCurrentUser("1");
         bookingMapper.insert(booking);
