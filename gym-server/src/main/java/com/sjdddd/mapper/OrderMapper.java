@@ -5,6 +5,7 @@ import com.sjdddd.entity.Bill;
 import com.sjdddd.entity.Course;
 import com.sjdddd.entity.Order;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public interface OrderMapper {
      * @param endDate 结束日期
      * @return 教练收益统计列表
      */
-    List<CoachRevenueDTO> selectCoachRevenue(Long coachId, String startDate, String endDate);
+    List<CoachRevenueDTO> selectCoachRevenue(@Param("coachId") Long coachId, @Param("startDate") String startDate, @Param("endDate") String endDate);
 
     /**
      * 统计教练总收益
@@ -42,5 +43,5 @@ public interface OrderMapper {
      * @param endDate 结束日期
      * @return 总收益
      */
-    java.math.BigDecimal selectCoachTotalRevenue(Long coachId, String startDate, String endDate);
+    java.math.BigDecimal selectCoachTotalRevenue(@Param("coachId") Long coachId, @Param("startDate") String startDate, @Param("endDate") String endDate);
 }
