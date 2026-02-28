@@ -65,6 +65,11 @@ public class Course {
     private BigDecimal courseFee;
 
     /**
+     * 课程类型：0 身体项目，1 面部项目
+     */
+    private Integer courseType;
+
+    /**
      * 创建时间
      */
     //@ApiModelProperty(value="创建时间")

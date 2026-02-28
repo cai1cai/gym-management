@@ -26,6 +26,7 @@ interface CourseEditParams {
     coachId: string,
     coachRealName: string,
     courseFee: number,
+    courseType: number,
     scheduleStart: Date,
     scheduleEnd: Date,
 }
@@ -59,8 +60,8 @@ export const addCourseService = ({courseName, coachRealName,  courseFee, schedul
     return request.post('/course/add', {courseName, coachRealName,  courseFee, scheduleStart, scheduleEnd});
 }
 
-export const editCourseService = ({courseId, courseName, coachRealName, coachId, courseFee, scheduleStart, scheduleEnd}: CourseEditParams): AxiosPromise => {
-    return request.put('/course/edit', {courseId, courseName, coachRealName, coachId, courseFee, scheduleStart, scheduleEnd});
+export const editCourseService = ({courseId, courseName, coachRealName, coachId, courseFee, courseType, scheduleStart, scheduleEnd}: CourseEditParams): AxiosPromise => {
+    return request.put('/course/edit', {courseId, courseName, coachRealName, coachId, courseFee, courseType, scheduleStart, scheduleEnd});
 }
 
 export const deleteCourseService = ({courseId}: CourseDeleteParams): AxiosPromise => {

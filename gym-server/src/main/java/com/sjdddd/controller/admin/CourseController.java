@@ -69,6 +69,8 @@ public class CourseController {
     @OperationLog(operDesc = "修改课程")
     public Result<CourseEditVO> edit(@RequestBody CourseEditDTO courseEditDTO) {
         log.info("修改课程：{}", courseEditDTO);
+        // log.info("courseType字段值: {}", courseEditDTO.getCourseType());
+        // log.info("courseType字段类型: {}", courseEditDTO.getCourseType() != null ? courseEditDTO.getCourseType().getClass().getSimpleName() : "null");
 
         courseService.edit(courseEditDTO);
 

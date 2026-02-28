@@ -23,6 +23,11 @@
       <!-- <el-table-column prop="coachId" label="员工ID" width="150"></el-table-column>
       <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column> -->
       <el-table-column prop="courseFee" label="金额/每次" width="180"></el-table-column>
+      <el-table-column prop="courseType" label="项目类型" width="120">
+        <template #default="{ row }">
+          {{ row.courseType === 0 ? '身体项目' : '面部项目' }}
+        </template>
+      </el-table-column>
 
       <!-- 暂时不需要显示课程时间 -->
       <!-- <el-table-column prop="scheduleStart" label="项目开始时间" width="180">
@@ -103,6 +108,18 @@
       <el-form-item label="项目费用" :label-width="formLabelWidth">
         <el-input v-model="editFormData.courseFee" autocomplete="off"></el-input>
       </el-form-item>
+      <el-form-item label="项目类型" :label-width="formLabelWidth">
+        <el-select v-model="editFormData.courseType" placeholder="请选择项目类型" @change="onCourseTypeChange">
+          <el-option label="身体项目" :value=0></el-option>
+          <el-option label="面部项目" :value=1></el-option>
+        </el-select>
+        <!-- <div v-if="!editFormData.courseType && editFormData.courseType !== 0" style="color: red; font-size: 12px; margin-top: 5px;">
+          请选择项目类型
+        </div> -->
+        <!-- <div style="color: blue; font-size: 12px; margin-top: 5px;">
+          当前选择: {{ editFormData.courseType }} ({{ editFormData.courseType === 0 ? '身体项目' : editFormData.courseType === 1 ? '面部项目' : '未选择' }})
+        </div> -->
+      </el-form-item>
       <!-- 暂时不需要课程时间字段 -->
       <!-- <el-form-item label="项目开始时间" :label-width="formLabelWidth">
         <el-date-picker
@@ -151,6 +168,12 @@
       </el-form-item> -->
       <el-form-item label="项目费用" :label-width="formLabelWidth">
         <el-input v-model="addFormData.courseFee" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="项目类型" :label-width="formLabelWidth">
+        <el-select v-model="addFormData.courseType" placeholder="请选择项目类型">
+          <el-option label="身体项目" :value=0></el-option>
+          <el-option label="面部项目" :value=1></el-option>
+        </el-select>
       </el-form-item>
       <!-- 暂时不需要课程时间字段 -->
       <!-- <el-form-item label="项目开始时间" :label-width="formLabelWidth">
@@ -256,24 +279,70 @@ const addFormData = ref({}); // 存储添加表单数据
 // 打开编辑对话框
 const handleEdit = (courses) => {
   editFormData.value = {...courses}; // 深拷贝员工信息到表单数据
-  console.log(editFormData.value)
+  // 强制设置courseType的默认值
+  if (editFormData.value.courseType === null || editFormData.value.courseType === undefined || editFormData.value.courseType === '') {
+    editFormData.value.courseType = 0; // 默认为身体项目
+  }
+  // 确保是数字类型
+  editFormData.value.courseType = Number(editFormData.value.courseType) || 0;
+  console.log('编辑表单数据初始化:', editFormData.value)
   editDialogVisible.value = true; // 显示对话框
-  console.log(editDialogVisible.value)
 };
 
 // 打开添加对话框
 const addCourse = () => {
   console.log('添加项目');
+  // 初始化添加表单的默认值
+  addFormData.value = {
+    courseName: '',
+    courseFee: 0,
+    courseType: 0 // 默认为身体项目
+  };
   addDialogVisible.value = true; // 显示对话框
 };
 
 
+// 课程类型选择变化事件
+const onCourseTypeChange = (value) => {
+  // console.log('课程类型选择变化:', value);
+  // console.log('value类型:', typeof value);
+  // 强制设置为数字类型
+  editFormData.value.courseType = Number(value);
+  // console.log('设置后的editFormData.courseType:', editFormData.value.courseType);
+  // console.log('设置后的editFormData.courseType类型:', typeof editFormData.value.courseType);
+  // 强制触发Vue的响应式更新
+  editFormData.value = {...editFormData.value};
+};
+
 // 更新信息的逻辑
 const updateCourseInfo = async () => {
-  console.log('更新项目信息', editFormData.value);
+  // console.log('=== 开始更新课程信息 ===');
+  // console.log('1. 原始编辑数据:', editFormData.value);
+  // console.log('2. courseType原始值:', editFormData.value.courseType);
+  // console.log('3. courseType原始类型:', typeof editFormData.value.courseType);
+  
+  // 强制构建新的数据对象，确保courseType有值
+  const updateData = {
+    courseId: editFormData.value.courseId,
+    courseName: editFormData.value.courseName,
+    courseFee: editFormData.value.courseFee,
+    courseType: Number(editFormData.value.courseType) || 0 // 强制设置默认值
+  };
+  
+  // console.log('4. 强制构建的更新数据:', updateData);
+  // console.log('5. updateData.courseType值:', updateData.courseType);
+  // console.log('6. updateData.courseType类型:', typeof updateData.courseType);
+  
+  // 验证必填字段
+  if (!updateData.courseName || !updateData.courseFee) {
+    ElMessage.error('请填写完整的课程信息');
+    return;
+  }
+  
+  // console.log('7. 准备发送到后端的数据:', updateData);
+  
   try {
-    await editCourseService(editFormData.value);
-
+    await editCourseService(updateData);
     ElMessage.success('项目信息更新成功');
   } catch (error) {
     console.error('更新项目信息失败:', error);
@@ -321,6 +390,7 @@ const addNewCourse = async () => {
       // coachId: addFormData.value.coachId,
       // coachRealName: addFormData.value.coachRealName,
       courseFee: addFormData.value.courseFee,
+      courseType: addFormData.value.courseType,
       // 暂时不需要时间字段
       // scheduleStart: addFormData.value.scheduleStart,
       // scheduleEnd: addFormData.value.scheduleEnd,

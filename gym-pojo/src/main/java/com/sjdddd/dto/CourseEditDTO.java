@@ -22,6 +22,11 @@ public class CourseEditDTO implements java.io.Serializable{
 
     private BigDecimal courseFee;
 
+    /**
+     * 课程类型：0 身体项目，1 面部项目
+     */
+    private Integer courseType;
+
     // 暂时不需要课程时间字段
     /**
      * 课程开始时间

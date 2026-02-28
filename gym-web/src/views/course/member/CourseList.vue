@@ -22,6 +22,11 @@
       <!-- <el-table-column prop="coachId" label="员工ID" width="150"></el-table-column>
       <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column> -->
       <el-table-column prop="courseFee" label="金额/每次" width="180"></el-table-column>
+      <el-table-column prop="courseType" label="项目类型" width="120">
+        <template #default="{ row }">
+          {{ row.courseType === 0 ? '身体项目' : '面部项目' }}
+        </template>
+      </el-table-column>
 
       <!-- 暂时不需要显示课程时间 -->
       <!-- <el-table-column prop="scheduleStart" label="项目开始时间" width="180">

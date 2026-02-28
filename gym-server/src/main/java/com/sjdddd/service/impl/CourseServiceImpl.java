@@ -60,18 +60,28 @@ public class CourseServiceImpl implements CourseService {
         // courseAddDTO.setCoachId(coachId);
         courseAddDTO.setIsEnrolled("0");
 
-        BeanUtils.copyProperties(courseAddDTO, course);
+        // BeanUtils.copyProperties(courseAddDTO, course);
+        // 手动设置属性以确保courseType正确传递
+        course.setCourseName(courseAddDTO.getCourseName());
+        // course.setCoachId(courseAddDTO.getCoachId());
+        // course.setCoachRealName(courseAddDTO.getCoachRealName());
+        course.setCourseFee(courseAddDTO.getCourseFee());
+        course.setCourseType(courseAddDTO.getCourseType());
+        // course.setScheduleStart(courseAddDTO.getScheduleStart());
+        // course.setScheduleEnd(courseAddDTO.getScheduleEnd());
+        course.setIsEnrolled(courseAddDTO.getIsEnrolled());
 
-        course.builder()
-                .courseName(courseAddDTO.getCourseName())
-                // 暂时不需要教练字段
-                // .coachId(courseAddDTO.getCoachId())
-                .courseFee(courseAddDTO.getCourseFee())
-                // 暂时不需要时间字段
-                // .scheduleStart(courseAddDTO.getScheduleStart())
-                // .scheduleEnd(courseAddDTO.getScheduleEnd())
-                .isEnrolled(courseAddDTO.getIsEnrolled())
-                .build();
+        // course.builder()
+        //         .courseName(courseAddDTO.getCourseName())
+        //         // 暂时不需要教练字段
+        //         // .coachId(courseAddDTO.getCoachId())
+        //         .courseFee(courseAddDTO.getCourseFee())
+        //         .courseType(courseAddDTO.getCourseType())
+        //         // 暂时不需要时间字段
+        //         // .scheduleStart(courseAddDTO.getScheduleStart())
+        //         // .scheduleEnd(courseAddDTO.getScheduleEnd())
+        //         .isEnrolled(courseAddDTO.getIsEnrolled())
+        //         .build();
 
         courseMapper.insert(course);
 
@@ -95,17 +105,28 @@ public class CourseServiceImpl implements CourseService {
         // Long coachId = coach.get(0).getCoachId();
         // courseEditDTO.setCoachId(coachId);
 
-        BeanUtils.copyProperties(courseEditDTO, course);
+        // BeanUtils.copyProperties(courseEditDTO, course);
+        // 手动设置属性以确保courseType正确传递
+        course.setCourseId(courseEditDTO.getCourseId());
+        course.setCourseName(courseEditDTO.getCourseName());
+        // course.setCoachId(courseEditDTO.getCoachId());
+        // course.setCoachRealName(courseEditDTO.getCoachRealName());
+        course.setCourseFee(courseEditDTO.getCourseFee());
+        course.setCourseType(courseEditDTO.getCourseType());
+        // course.setScheduleStart(courseEditDTO.getScheduleStart());
+        // course.setScheduleEnd(courseEditDTO.getScheduleEnd());
+        // course.setIsEnrolled(courseEditDTO.getIsEnrolled());
 
-        course.builder()
-                .courseName(courseEditDTO.getCourseName())
-                // 暂时不需要教练字段
-                // .coachId(courseEditDTO.getCoachId())
-                .courseFee(courseEditDTO.getCourseFee())
-                // 暂时不需要时间字段
-                // .scheduleStart(courseEditDTO.getScheduleStart())
-                // .scheduleEnd(courseEditDTO.getScheduleEnd())
-                .build();
+        // course.builder()
+        //         .courseName(courseEditDTO.getCourseName())
+        //         // 暂时不需要教练字段
+        //         // .coachId(courseEditDTO.getCoachId())
+        //         .courseFee(courseEditDTO.getCourseFee())
+        //         .courseType(courseEditDTO.getCourseType())
+        //         // 暂时不需要时间字段
+        //         // .scheduleStart(courseEditDTO.getScheduleStart())
+        //         // .scheduleEnd(courseEditDTO.getScheduleEnd())
+        //         .build();
 
         courseMapper.updateByPrimaryKeySelective(course);
 
