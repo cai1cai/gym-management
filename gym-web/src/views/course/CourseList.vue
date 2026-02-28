@@ -19,11 +19,13 @@
     <el-table v-loading="loading.value" :data="courses" style="width: 100%">
       <el-table-column prop="courseId" label="项目ID" width="150"></el-table-column>
       <el-table-column prop="courseName" label="项目名" width="180"></el-table-column>
-      <el-table-column prop="coachId" label="员工ID" width="150"></el-table-column>
-      <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column>
+      <!-- 暂时不需要教练字段 -->
+      <!-- <el-table-column prop="coachId" label="员工ID" width="150"></el-table-column>
+      <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column> -->
       <el-table-column prop="courseFee" label="金额/每次" width="180"></el-table-column>
 
-      <el-table-column prop="scheduleStart" label="项目开始时间" width="180">
+      <!-- 暂时不需要显示课程时间 -->
+      <!-- <el-table-column prop="scheduleStart" label="项目开始时间" width="180">
         <template #default="{ row }">
           {{ formatDate(row.scheduleStart) }}
         </template>
@@ -32,7 +34,7 @@
         <template #default="{ row }">
           {{ formatDate(row.scheduleEnd) }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column prop="createTime" label="创建时间" width="180">
         <template #default="{ row }">
@@ -50,7 +52,7 @@
         <template #default="{ row }">
           <el-button type="primary" size="mini" @click="handleEdit(row)" :icon="Edit" circle plain></el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row)" :icon="Delete" circle plain></el-button>
-          <el-button type="info" size="mini" @click="notifyMember(row)" :icon="Bell" circle plain></el-button>
+          <!-- <el-button type="info" size="mini" @click="notifyMember(row)" :icon="Bell" circle plain></el-button> -->
         </template>
       </el-table-column>
 
@@ -87,20 +89,22 @@
       <el-form-item label="项目名" :label-width="formLabelWidth">
         <el-input v-model="editFormData.courseName" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="员工姓名" :label-width="formLabelWidth">
+      <!-- 暂时不需要教练字段 -->
+      <!-- <el-form-item label="员工姓名" :label-width="formLabelWidth">
         <el-autocomplete
-            v-model="addFormData.coachRealName"
+            v-model="editFormData.coachRealName"
             :fetch-suggestions="querySearch"
             clearable
             :debounce=0
             placeholder="选择员工(模糊查询)"
             @select="handleSelect"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="项目费用" :label-width="formLabelWidth">
         <el-input v-model="editFormData.courseFee" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="项目开始时间" :label-width="formLabelWidth">
+      <!-- 暂时不需要课程时间字段 -->
+      <!-- <el-form-item label="项目开始时间" :label-width="formLabelWidth">
         <el-date-picker
             v-model="editFormData.scheduleStart"
             type="datetime"
@@ -113,7 +117,7 @@
             type="datetime"
             placeholder="选择日期时间">
         </el-date-picker>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
 
     <template #footer>
@@ -134,7 +138,8 @@
       <el-form-item label="项目名" :label-width="formLabelWidth">
         <el-input v-model="addFormData.courseName" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="员工姓名" :label-width="formLabelWidth">
+      <!-- 暂时不需要教练字段 -->
+      <!-- <el-form-item label="员工姓名" :label-width="formLabelWidth">
         <el-autocomplete
             v-model="addFormData.coachRealName"
             :fetch-suggestions="querySearch"
@@ -143,11 +148,12 @@
             placeholder="选择员工(模糊查询)"
             @select="handleSelect"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="项目费用" :label-width="formLabelWidth">
         <el-input v-model="addFormData.courseFee" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="项目开始时间" :label-width="formLabelWidth">
+      <!-- 暂时不需要课程时间字段 -->
+      <!-- <el-form-item label="项目开始时间" :label-width="formLabelWidth">
         <el-date-picker
             v-model="addFormData.scheduleStart"
             type="datetime"
@@ -160,7 +166,7 @@
             type="datetime"
             placeholder="选择日期时间">
         </el-date-picker>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <template #footer>
         <span class="dialog-footer">
@@ -311,11 +317,13 @@ const addNewCourse = async () => {
   try {
     const courseData = {
       courseName: addFormData.value.courseName,
-      //coachId: addFormData.value.coachId,
-      coachRealName: addFormData.value.coachRealName,
+      // 暂时不需要教练字段
+      // coachId: addFormData.value.coachId,
+      // coachRealName: addFormData.value.coachRealName,
       courseFee: addFormData.value.courseFee,
-      scheduleStart: addFormData.value.scheduleStart,
-      scheduleEnd: addFormData.value.scheduleEnd,
+      // 暂时不需要时间字段
+      // scheduleStart: addFormData.value.scheduleStart,
+      // scheduleEnd: addFormData.value.scheduleEnd,
     };
     console.log('添加项目信息', courseData);
     await addCourseService(courseData);
@@ -346,50 +354,41 @@ const searchCourse = async () => {
   }
 };
 
-const coachsList = ref([]);
+// 暂时不需要教练相关数据和方法
+// const coachsList = ref([]);
 
 // 当组件被加载时，获取所有员工的数据
-onMounted(async () => {
-  try {
-    const response = await getCoachListService();
-    coachsList.value = response.data.data; // 假设员工信息在items数组中
-    console.log(coachsList.value)
-  } catch (error) {
-    console.error('获取员工列表失败:', error);
-  }
-});
+// onMounted(async () => {
+//   try {
+//     const response = await getCoachListService();
+//     coachsList.value = response.data.data; // 假设员工信息在items数组中
+//     console.log(coachsList.value)
+//   } catch (error) {
+//     console.error('获取员工列表失败:', error);
+//   }
+// });
 
 // 根据输入查询匹配的员工姓名
-// const querySearch = (queryString, cb) => {
-//   console.log("查询员工:", queryString);
-//   const results = coachsList.value.filter(coach =>
-//       coach.coachRealName.toLowerCase().includes(queryString.toLowerCase())
-//   ).map(coach => coach.coachRealName);
-//   console.log("结果:", results);
-//   cb(results);
+// const querySearch = async (queryString, cb) => {
+//   try {
+//     console.log("查询员工:", queryString);
+//     const response = await getCoachListService();
+//     const coachNames = response.data.data.map(coach => ({ value: coach.coachRealName }));
+//     // 过滤和搜索词匹配的结果
+//     const results = coachNames.filter(coach => coach.value.toLowerCase().includes(queryString.toLowerCase()));
+//     console.log("结果:", results);
+//     cb(results); // 返回结果
+//   } catch (error) {
+//     console.error('获取员工列表失败:', error);
+//     cb([]); // 发生错误时返回空数组
+//   }
 // }
 
-const querySearch = async (queryString, cb) => {
-  try {
-    console.log("查询员工:", queryString);
-    const response = await getCoachListService();
-    const coachNames = response.data.data.map(coach => ({ value: coach.coachRealName }));
-    // 过滤和搜索词匹配的结果
-    const results = coachNames.filter(coach => coach.value.toLowerCase().includes(queryString.toLowerCase()));
-    console.log("结果:", results);
-    cb(results); // 返回结果
-  } catch (error) {
-    console.error('获取员工列表失败:', error);
-    cb([]); // 发生错误时返回空数组
-  }
-}
-
-
 // 当用户选择一个建议时的处理函数
-const handleSelect = (item) => {
-  console.log('选择的员工:', item);
-  // 这里可以根据选择的项目更新其他表单项
-};
+// const handleSelect = (item) => {
+//   console.log('选择的员工:', item);
+//   // 这里可以根据选择的项目更新其他表单项
+// };
 
 
 </script>

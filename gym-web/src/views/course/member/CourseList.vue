@@ -18,11 +18,13 @@
     <el-table v-loading="loading.value" :data="courses" style="width: 100%">
       <el-table-column prop="courseId" label="项目ID" width="150"></el-table-column>
       <el-table-column prop="courseName" label="项目名" width="180"></el-table-column>
-      <el-table-column prop="coachId" label="员工ID" width="150"></el-table-column>
-      <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column>
+      <!-- 暂时不需要教练字段 -->
+      <!-- <el-table-column prop="coachId" label="员工ID" width="150"></el-table-column>
+      <el-table-column prop="coachRealName" label="员工姓名" width="180"></el-table-column> -->
       <el-table-column prop="courseFee" label="金额/每次" width="180"></el-table-column>
 
-      <el-table-column prop="scheduleStart" label="项目开始时间" width="180">
+      <!-- 暂时不需要显示课程时间 -->
+      <!-- <el-table-column prop="scheduleStart" label="项目开始时间" width="180">
         <template #default="{ row }">
           {{ formatDate(row.scheduleStart) }}
         </template>
@@ -31,12 +33,17 @@
         <template #default="{ row }">
           {{ formatDate(row.scheduleEnd) }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column label="操作" width="150" align="center" fixed="right">
         <template #default="{ row }">
-          <el-button v-if="row.isEnrolledByOther === '1'" type="info" size="mini" disabled>已被预订</el-button>
-          <el-button v-else-if="row.isEnrolledByCurrentUser === '1'" type="warning" size="mini" @click="handleRefund(row)">退订</el-button>
+          <!-- 暂时不需要预订状态检查，所有课程都可以预订 -->
+          <!-- <el-button v-if="row.isEnrolledByOther === '1'" type="info" size="mini" disabled>已被预订</el-button> -->
+          <!-- <el-button v-else-if="row.isEnrolledByCurrentUser === '1'" type="warning" size="mini" @click="handleRefund(row)">退订</el-button> -->
+          <!-- <el-button v-else type="primary" size="mini" @click="handleEnroll(row)">预订</el-button> -->
+          
+          <!-- 简化逻辑：如果当前用户已预订则显示退订，否则显示预订 -->
+          <el-button v-if="row.isEnrolledByCurrentUser === '1'" type="warning" size="mini" @click="handleRefund(row)">退订</el-button>
           <el-button v-else type="primary" size="mini" @click="handleEnroll(row)">预订</el-button>
         </template>
       </el-table-column>
@@ -202,16 +209,18 @@ const handleEnroll = async (courses) => {
   try {
     //console.log(courses)
 
+    // 暂时不需要预订状态检查，所有课程都可以预订
     // 检查项目能否预订
-    if (courses.isEnrolledByOther === '1') {
-      ElMessage.error('该项目已被其他会员预订');
-      return;
-    }
+    // if (courses.isEnrolledByOther === '1') {
+    //   ElMessage.error('该项目已被其他会员预订');
+    //   return;
+    // }
 
-    if (courses.scheduleStart < Date.now()) {
-      ElMessage.error('该项目已开始，无法预订');
-      return;
-    }
+    // 暂时不需要时间检查
+    // if (courses.scheduleStart < Date.now()) {
+    //   ElMessage.error('该项目已开始，无法预订');
+    //   return;
+    // }
 
     // 检查余额逻辑（假设有一个方法 checkUserBalance 返回余额是否足够）
     const balanceEnough = await checkUserBalance(courses.courseFee);
@@ -240,19 +249,27 @@ const handleEnroll = async (courses) => {
   }
 };
 
-const canRefund = (scheduleStart) => {
-  const now = Date.now();
-  return now < scheduleStart;
+const canRefund = () => {
+  // 暂时不需要时间检查，直接允许退订
+  return true;
+  // const now = Date.now();
+  // return now < scheduleStart;
 };
 
 // 退订
 const handleRefund = async (courses) => {
   try {
-    // 检查是否可以退订（比如，检查当前时间是否在项目开始时间之前）
-    if (!canRefund(courses.scheduleStart)) {
+    // 检查是否可以退订
+    if (!canRefund()) {
       ElMessage.warning('项目已开始，无法退订');
       return;
     }
+    // 暂时不需要时间检查逻辑
+    // 检查是否可以退订（比如，检查当前时间是否在项目开始时间之前）
+    // if (!canRefund(courses.scheduleStart)) {
+    //   ElMessage.warning('项目已开始，无法退订');
+    //   return;
+    // }
 
     await ElMessageBox.confirm('确定要退订吗？', '退订确认', {
       confirmButtonText: '确定',

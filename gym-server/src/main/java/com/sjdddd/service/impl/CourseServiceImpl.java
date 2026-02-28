@@ -54,21 +54,22 @@ public class CourseServiceImpl implements CourseService {
     public Course add(CourseAddDTO courseAddDTO) {
         Course course = new Course();
 
-        List<Coach> coach = coachMapper.selectByCoachRealName(courseAddDTO.getCoachRealName());
-
-        Long coachId = coach.get(0).getCoachId();
-
-        courseAddDTO.setCoachId(coachId);
+        // 暂时不需要教练相关逻辑
+        // List<Coach> coach = coachMapper.selectByCoachRealName(courseAddDTO.getCoachRealName());
+        // Long coachId = coach.get(0).getCoachId();
+        // courseAddDTO.setCoachId(coachId);
         courseAddDTO.setIsEnrolled("0");
 
         BeanUtils.copyProperties(courseAddDTO, course);
 
         course.builder()
                 .courseName(courseAddDTO.getCourseName())
-                .coachId(courseAddDTO.getCoachId())
+                // 暂时不需要教练字段
+                // .coachId(courseAddDTO.getCoachId())
                 .courseFee(courseAddDTO.getCourseFee())
-                .scheduleStart(courseAddDTO.getScheduleStart())
-                .scheduleEnd(courseAddDTO.getScheduleEnd())
+                // 暂时不需要时间字段
+                // .scheduleStart(courseAddDTO.getScheduleStart())
+                // .scheduleEnd(courseAddDTO.getScheduleEnd())
                 .isEnrolled(courseAddDTO.getIsEnrolled())
                 .build();
 
@@ -89,20 +90,21 @@ public class CourseServiceImpl implements CourseService {
     public Course edit(CourseEditDTO courseEditDTO) {
         Course course = new Course();
 
-        List<Coach> coach = coachMapper.selectByCoachRealName(courseEditDTO.getCoachRealName());
-
-        Long coachId = coach.get(0).getCoachId();
-
-        courseEditDTO.setCoachId(coachId);
+        // 暂时不需要教练相关逻辑
+        // List<Coach> coach = coachMapper.selectByCoachRealName(courseEditDTO.getCoachRealName());
+        // Long coachId = coach.get(0).getCoachId();
+        // courseEditDTO.setCoachId(coachId);
 
         BeanUtils.copyProperties(courseEditDTO, course);
 
         course.builder()
                 .courseName(courseEditDTO.getCourseName())
-                .coachId(courseEditDTO.getCoachId())
+                // 暂时不需要教练字段
+                // .coachId(courseEditDTO.getCoachId())
                 .courseFee(courseEditDTO.getCourseFee())
-                .scheduleStart(courseEditDTO.getScheduleStart())
-                .scheduleEnd(courseEditDTO.getScheduleEnd())
+                // 暂时不需要时间字段
+                // .scheduleStart(courseEditDTO.getScheduleStart())
+                // .scheduleEnd(courseEditDTO.getScheduleEnd())
                 .build();
 
         courseMapper.updateByPrimaryKeySelective(course);
