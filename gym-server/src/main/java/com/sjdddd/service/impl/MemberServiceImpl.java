@@ -132,10 +132,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public PageResult searchList(Integer pageNum, Integer pageSize, String userRealName) {
+    public PageResult searchList(Integer pageNum, Integer pageSize, String userRealName, String userPhone) {
         PageHelper.startPage(pageNum, pageSize);
 
-        List<MemberCard> list = memberCardMapper.selectByUserRealName(userRealName);
+        List<MemberCard> list = memberCardMapper.selectByUserRealNameAndPhone(userRealName, userPhone);
 
         PageInfo page = new PageInfo(list);
 

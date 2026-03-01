@@ -6,7 +6,10 @@
         <div class="extra">
           <el-input v-model="searchName" placeholder="请输入会员姓名" style="width: 200px;" :prefix-icon="Search"
                     class="search-input"></el-input>
+          <el-input v-model="searchPhone" placeholder="请输入手机号" style="width: 200px;" :prefix-icon="Search"
+                    class="search-input"></el-input>
           <el-button type="primary" @click="searchMember">搜索</el-button>
+          <el-button type="primary" @click="resetSearch">重置</el-button>
           <el-button type="primary" @click="addMember">添加会员</el-button>
         </div>
       </div>
@@ -489,16 +492,25 @@ const handleDetail = (row) => {
 
 // 搜索会员
 const searchName = ref('');
+const searchPhone = ref('');
 const searchMember = async () => {
   try {
     const userRealName = searchName.value;
+    const userPhone = searchPhone.value;
     const pageNum = pagination.value.currentPage;
     const pageSize = pagination.value.pageSize;
-    const response = await searchMemberService({pageNum, pageSize, userRealName});
+    const response = await searchMemberService({pageNum, pageSize, userRealName, userPhone});
     members.value = response.data.data.items; // 使用搜索结果更新会员列表
   } catch (error) {
     console.error('搜索会员失败:', error);
   }
+};
+
+// 重置搜索
+const resetSearch = () => {
+  searchName.value = '';
+  searchPhone.value = '';
+  fetchMembers();
 };
 
 

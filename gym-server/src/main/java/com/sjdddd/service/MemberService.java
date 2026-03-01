@@ -25,7 +25,7 @@ public interface MemberService {
 
     void delete(Long memberCardId);
 
-    PageResult searchList(Integer pageNum, Integer pageSize, String keyword);
+    PageResult searchList(Integer pageNum, Integer pageSize, String userRealName, String userPhone);
 
     MemberCard getMemberCard(Object userId);
 }

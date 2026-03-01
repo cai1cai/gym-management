@@ -185,6 +185,23 @@
         order by mc.create_time desc
     </select>
 
+    <select id="selectByUserRealNameAndPhone" resultMap="BaseResultMap">
+        select *
+        from gym_member_cards mc
+        left join gym_users u
+        on u.user_id = mc.user_id
+        <where>
+            <if test="userRealName != null and userRealName != ''">
+                and u.user_real_name like concat('%', #{userRealName}, '%')
+            </if>
+            <if test="userPhone != null and userPhone != ''">
+                and u.user_phone like concat('%', #{userPhone}, '%')
+            </if>
+            and user_type = '2'
+        </where>
+        order by mc.create_time desc
+    </select>
+
     <select id="selectByUserId" resultType="com.sjdddd.entity.MemberCard">
         select *
         from gym_member_cards

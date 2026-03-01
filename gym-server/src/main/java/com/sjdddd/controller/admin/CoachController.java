@@ -81,10 +81,11 @@ public class CoachController {
     public Result<PageResult> searchMemberList(
             Integer pageNum,
             Integer pageSize,
-            @RequestParam(required = false) String coachRealName
+            @RequestParam(required = false) String coachRealName,
+            @RequestParam(required = false) String coachPhone
     ) {
 
-        PageResult pageResult = coachService.searchList(pageNum, pageSize, coachRealName);
+        PageResult pageResult = coachService.searchList(pageNum, pageSize, coachRealName, coachPhone);
 
         return Result.success(pageResult);
 

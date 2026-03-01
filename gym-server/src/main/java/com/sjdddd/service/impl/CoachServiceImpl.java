@@ -92,10 +92,10 @@ public class CoachServiceImpl implements CoachService {
     }
 
     @Override
-    public PageResult searchList(Integer pageNum, Integer pageSize, String coachRealName) {
+    public PageResult searchList(Integer pageNum, Integer pageSize, String coachRealName, String coachPhone) {
         PageHelper.startPage(pageNum, pageSize);
 
-        List<Coach> list = coachMapper.selectByCoachRealName(coachRealName);
+        List<Coach> list = coachMapper.selectByCoachRealNameAndPhone(coachRealName, coachPhone);
 
         PageInfo page = new PageInfo(list);
 

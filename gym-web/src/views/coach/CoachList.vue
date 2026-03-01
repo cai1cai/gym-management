@@ -8,7 +8,10 @@
         <div class="extra">
           <el-input v-model="searchName" placeholder="请输入员工姓名" style="width: 200px;" :prefix-icon="Search"
                     class="search-input"></el-input>
+          <el-input v-model="searchPhone" placeholder="请输入手机号" style="width: 200px;" :prefix-icon="Search"
+                    class="search-input"></el-input>
           <el-button type="primary" @click="searchCoach">搜索</el-button>
+          <el-button type="primary" @click="resetSearch">重置</el-button>
           <el-button type="primary" @click="addCoach">添加员工</el-button>
         </div>
       </div>
@@ -354,16 +357,25 @@ const addNewCoach = async () => {
 
 // 搜索员工
 const searchName = ref('');
+const searchPhone = ref('');
 const searchCoach = async () => {
   try {
     const coachRealName = searchName.value;
+    const coachPhone = searchPhone.value;
     const pageNum = pagination.value.currentPage;
     const pageSize = pagination.value.pageSize;
-    const response = await searchCoachService({pageNum, pageSize, coachRealName});
+    const response = await searchCoachService({pageNum, pageSize, coachRealName, coachPhone});
     coachs.value = response.data.data.items; // 使用搜索结果更新员工列表
   } catch (error) {
     console.error('搜索员工失败:', error);
   }
+};
+
+// 重置搜索
+const resetSearch = () => {
+  searchName.value = '';
+  searchPhone.value = '';
+  fetchCoachs();
 };
 
 

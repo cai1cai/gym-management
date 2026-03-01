@@ -38,6 +38,8 @@ public interface MemberCardMapper {
 
     List<MemberCard> selectByUserRealName(String userRealName);
 
+    List<MemberCard> selectByUserRealNameAndPhone(String userRealName, String userPhone);
+
     MemberCard selectByUserId(Object userId);
 
     void updateBalanceByUserId(Object userId, BigDecimal newBalance);

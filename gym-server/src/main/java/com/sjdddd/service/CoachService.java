@@ -20,7 +20,7 @@ public interface CoachService {
 
     Coach delete(Long coachId);
 
-    PageResult searchList(Integer pageNum, Integer pageSize, String coachRealName);
+    PageResult searchList(Integer pageNum, Integer pageSize, String coachRealName, String coachPhone);
 
     /**
      * 根据ID获取教练信息

@@ -35,5 +35,7 @@ public interface CoachMapper {
 
     List<Coach> selectByCoachRealName(String coachRealName);
 
+    List<Coach> selectByCoachRealNameAndPhone(String coachRealName, String coachPhone);
+
     List<Coach> selectCoachRealName();
 }

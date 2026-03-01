@@ -4,7 +4,8 @@ import {AxiosPromise} from "axios";
 interface CoachList {
     pageNum: number,
     pageSize: number,
-    coachRealName?: string
+    coachRealName?: string,
+    coachPhone?: string
 }
 
 interface CoachAddParams {
@@ -55,13 +56,14 @@ export const deleteCoachService = ({coachId}: CoachDeleteParams): AxiosPromise =
     });
 }
 
-export const searchCoachService = ({pageNum, pageSize, coachRealName}: CoachList) => {
-    console.log(pageNum, pageSize, coachRealName)
+export const searchCoachService = ({pageNum, pageSize, coachRealName, coachPhone}: CoachList) => {
+    console.log(pageNum, pageSize, coachRealName, coachPhone)
     return request.get('/coach/search', {
         params: {
             pageNum,
             pageSize,
-            coachRealName
+            coachRealName,
+            coachPhone
         }
     });
 };

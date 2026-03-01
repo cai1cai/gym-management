@@ -4,7 +4,8 @@ import {AxiosPromise} from "axios";
 interface MemberList {
     pageNum: number,
     pageSize: number,
-    userRealName?: string
+    userRealName?: string,
+    userPhone?: string
 }
 
 interface MemberAddParams {
@@ -32,7 +33,8 @@ interface MemberDeleteParams {
 }
 
 interface MemberSearchParams {
-    userRealName: string
+    userRealName?: string,
+    userPhone?: string
 }
 
 export const getMemberListService = ({ pageNum, pageSize }: MemberList) => {
@@ -63,13 +65,14 @@ export const deleteMemberService = ({memberCardId}: MemberDeleteParams): AxiosPr
     });
 }
 
-export const searchMemberService = ({pageNum, pageSize, userRealName}: MemberList) => {
-    console.log(pageNum, pageSize, userRealName)
+export const searchMemberService = ({pageNum, pageSize, userRealName, userPhone}: MemberList) => {
+    console.log(pageNum, pageSize, userRealName, userPhone)
     return request.get('/member/search', {
         params: {
             pageNum,
             pageSize,
-            userRealName
+            userRealName,
+            userPhone
         }
     });
 };

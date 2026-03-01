@@ -87,10 +87,11 @@ public class MemberController {
     public Result<PageResult> searchMemberList(
             Integer pageNum,
             Integer pageSize,
-            @RequestParam(required = false) String userRealName
+            @RequestParam(required = false) String userRealName,
+            @RequestParam(required = false) String userPhone
     ) {
 
-        PageResult pageResult = memberService.searchList(pageNum, pageSize, userRealName);
+        PageResult pageResult = memberService.searchList(pageNum, pageSize, userRealName, userPhone);
 
         return Result.success(pageResult);
 
