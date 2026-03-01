@@ -3,7 +3,7 @@ sjdddd:
     driver-class-name: com.mysql.cj.jdbc.Driver
     host: localhost
     port: 3306
-    database: gym-management
+    database: gym-management-test
     username: root
     password: guess@lb1221LB
 

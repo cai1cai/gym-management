@@ -25,12 +25,21 @@
       </el-table-column>
       <el-table-column prop="userPhone" label="手机号" width="180"></el-table-column>
 
-      <el-table-column prop="memberCardStatus" label="会员状态" width="180">
+      <el-table-column prop="memberCardType" label="会员卡类型" width="180">
         <template #default="{ row }">
-          {{ statusText(row.memberCardStatus) }}
+          {{ cardTypeText(row.memberCardType) }}
         </template>
       </el-table-column>
-      <el-table-column prop="memberFee" label="余额" width="150"></el-table-column>
+      <el-table-column prop="remainingCount" label="剩余次数" width="120">
+        <template #default="{ row }">
+          {{ row.memberCardType === '0' ? (row.remainingCount || 0) + '次' : '-' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="cardAmount" label="卡内金额" width="150">
+        <template #default="{ row }">
+          {{ (row.memberCardType === '1' || row.memberCardType === '2') ? '¥' + (row.cardAmount || 0) : '-' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="180">
         <template #default="{ row }">
           {{ formatDate(row.createTime) }}
@@ -91,15 +100,18 @@
       <el-form-item label="手机号" :label-width="formLabelWidth">
         <el-input v-model="editFormData.userPhone" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="会员状态" :label-width="formLabelWidth">
-        <el-radio-group v-model="editFormData.memberCardStatus">
-          <el-radio :label="0">未激活</el-radio>
-          <el-radio :label="1">激活</el-radio>
-          <el-radio :label="2">已过期</el-radio>
-        </el-radio-group>
+      <el-form-item label="会员卡类型" :label-width="formLabelWidth">
+        <el-select v-model="editFormData.memberCardType" placeholder="请选择会员卡类型" @change="onCardTypeChange">
+          <el-option label="拓客卡" value="0"></el-option>
+          <el-option label="活动促销卡" value="1"></el-option>
+          <el-option label="正常成交卡" value="2"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="余额" :label-width="formLabelWidth">
-        <el-input v-model="editFormData.memberFee" autocomplete="off"></el-input>
+      <el-form-item label="剩余次数" :label-width="formLabelWidth" v-if="editFormData.memberCardType === '0'">
+        <el-input-number v-model="editFormData.remainingCount" :min="0" :max="6" placeholder="请输入剩余次数"></el-input-number>
+      </el-form-item>
+      <el-form-item label="卡内金额" :label-width="formLabelWidth" v-if="editFormData.memberCardType === '1' || editFormData.memberCardType === '2'">
+        <el-input v-model="editFormData.cardAmount" autocomplete="off" placeholder="请输入卡内金额"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -130,15 +142,18 @@
       <el-form-item label="手机号" :label-width="formLabelWidth">
         <el-input v-model="addFormData.userPhone" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="会员状态" :label-width="formLabelWidth">
-        <el-radio-group v-model="addFormData.memberCardStatus">
-          <el-radio :label="0">未激活</el-radio>
-          <el-radio :label="1">激活</el-radio>
-          <el-radio :label="2">已过期</el-radio>
-        </el-radio-group>
+      <el-form-item label="会员卡类型" :label-width="formLabelWidth">
+        <el-select v-model="addFormData.memberCardType" placeholder="请选择会员卡类型" @change="onAddCardTypeChange">
+          <el-option label="拓客卡" value="0"></el-option>
+          <el-option label="活动促销卡" value="1"></el-option>
+          <el-option label="正常成交卡" value="2"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="余额" :label-width="formLabelWidth">
-        <el-input v-model="addFormData.memberFee" autocomplete="off"></el-input>
+      <el-form-item label="剩余次数" :label-width="formLabelWidth" v-if="addFormData.memberCardType === '0'">
+        <el-input-number v-model="addFormData.remainingCount" :min="0" :max="6" placeholder="请输入剩余次数"></el-input-number>
+      </el-form-item>
+      <el-form-item label="卡内金额" :label-width="formLabelWidth" v-if="addFormData.memberCardType === '1' || addFormData.memberCardType === '2'">
+        <el-input v-model="addFormData.cardAmount" autocomplete="off" placeholder="请输入卡内金额"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -230,6 +245,15 @@ const genderText = (genderCode) => {
   return genders[genderCode] || '未知'; // 如果代码不是0、1或2，则返回'未知'
 };
 
+const cardTypeText = (cardTypeCode) => {
+  const cardTypes = {
+    '0': '拓客卡',
+    '1': '活动促销卡',
+    '2': '正常成交卡'
+  };
+  return cardTypes[cardTypeCode] || '未知';
+};
+
 const statusText = (statusCode) => {
   const status = {
     '0': '未激活',
@@ -294,9 +318,21 @@ const updateMemberInfo = async () => {
       ElMessage.warning('请选择性别');
       return;
     }
-    if (editFormData.value.memberFee === undefined) {
-      ElMessage.warning('请输入余额');
+    if (!editFormData.value.memberCardType) {
+      ElMessage.warning('请选择会员卡类型');
       return;
+    }
+    // 根据卡类型验证相应字段
+    if (editFormData.value.memberCardType === '0') {
+      if (!editFormData.value.remainingCount || editFormData.value.remainingCount <= 0) {
+        ElMessage.warning('请输入拓客卡剩余次数');
+        return;
+      }
+    } else {
+      if (!editFormData.value.cardAmount || editFormData.value.cardAmount <= 0) {
+        ElMessage.warning('请输入卡内金额');
+        return;
+      }
     }
     await editMemberService(editFormData.value);
 
@@ -347,10 +383,11 @@ const addNewMember = async () => {
   try {
     const memberData = {
       userRealName: addFormData.value.userRealName,
-      memberCardStatus: addFormData.value.memberCardStatus,
+      memberCardType: addFormData.value.memberCardType,
       sex: addFormData.value.sex,
       userPhone: addFormData.value.userPhone,
-      memberFee: addFormData.value.memberFee
+      remainingCount: addFormData.value.remainingCount,
+      cardAmount: addFormData.value.cardAmount
     };
     if (memberData.userRealName === undefined || memberData.userRealName === '') {
       ElMessage.warning('请输入会员姓名');
@@ -370,9 +407,21 @@ const addNewMember = async () => {
       ElMessage.warning('请选择性别');
       return;
     }
-    if (memberData.memberFee === undefined) {
-      ElMessage.warning('请输入余额');
+    if (!memberData.memberCardType) {
+      ElMessage.warning('请选择会员卡类型');
       return;
+    }
+    // 根据卡类型验证相应字段
+    if (memberData.memberCardType === '0') {
+      if (!memberData.remainingCount || memberData.remainingCount <= 0) {
+        ElMessage.warning('请输入拓客卡剩余次数');
+        return;
+      }
+    } else {
+      if (!memberData.cardAmount || memberData.cardAmount <= 0) {
+        ElMessage.warning('请输入卡内金额');
+        return;
+      }
     }
     console.log('添加会员信息', memberData);
     await addMemberService(memberData);
@@ -386,6 +435,34 @@ const addNewMember = async () => {
   } catch (error) {
     console.error('添加会员失败:', error);
     ElMessage.error('添加失败');
+  }
+};
+
+// 会员卡类型选择变化事件（编辑表单）
+const onCardTypeChange = (value) => {
+  // 清空相关字段
+  editFormData.value.remainingCount = null;
+  editFormData.value.cardAmount = null;
+  
+  // 根据类型设置默认值
+  if (value === '0') {
+    editFormData.value.remainingCount = 6; // 拓客卡默认6次
+  } else if (value === '1' || value === '2') {
+    editFormData.value.cardAmount = 0; // 其他卡默认金额0
+  }
+};
+
+// 会员卡类型选择变化事件（添加表单）
+const onAddCardTypeChange = (value) => {
+  // 清空相关字段
+  addFormData.value.remainingCount = null;
+  addFormData.value.cardAmount = null;
+  
+  // 根据类型设置默认值
+  if (value === '0') {
+    addFormData.value.remainingCount = 6; // 拓客卡默认6次
+  } else if (value === '1' || value === '2') {
+    addFormData.value.cardAmount = 0; // 其他卡默认金额0
   }
 };
 

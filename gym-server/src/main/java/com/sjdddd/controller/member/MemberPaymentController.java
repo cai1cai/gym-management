@@ -2,6 +2,7 @@ package com.sjdddd.controller.member;
 
 import com.sjdddd.annotation.OperationLog;
 import com.sjdddd.constant.JwtClaimsConstant;
+import com.sjdddd.entity.MemberCard;
 import com.sjdddd.properties.JwtProperties;
 import com.sjdddd.result.PageResult;
 import com.sjdddd.result.Result;
@@ -75,8 +76,8 @@ public class MemberPaymentController {
 
     // 余额查询
     @GetMapping("/balance")
-    @OperationLog(operDesc = "查询余额")
-    public Result<BigDecimal> balance(
+    @OperationLog(operDesc = "查询会员卡信息")
+    public Result<MemberCard> balance(
             HttpServletRequest request
     ) {
 
@@ -92,9 +93,9 @@ public class MemberPaymentController {
 
         log.info("userId:{}", userId);
 
-        BigDecimal balance = memberService.getMemberFee(userId);
+        MemberCard memberCard = memberService.getMemberCard(userId);
 
-        return Result.success(balance);
+        return Result.success(memberCard);
 
     }
 

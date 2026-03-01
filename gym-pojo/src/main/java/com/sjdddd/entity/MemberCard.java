@@ -41,28 +41,22 @@ public class MemberCard {
     private String avatar;
 
     /**
-    * 会员余额
+    * 会员卡类型，0 拓客卡，1 活动促销卡，2 正常成交卡
     */
-    //@ApiModelProperty(value="会员余额")
-    private BigDecimal memberFee;
+    //@ApiModelProperty(value="会员卡类型，0 拓客卡，1 活动促销卡，2 正常成交卡")
+    private String memberCardType;
 
     /**
-    * 会员卡状态，0 未激活， 1 已激活， 2 已过期
+    * 拓客卡剩余次数（仅拓客卡使用）
     */
-    //@ApiModelProperty(value="会员卡状态，0 未激活， 1 已激活， 2 已过期")
-    private String memberCardStatus;
+    //@ApiModelProperty(value="拓客卡剩余次数")
+    private Integer remainingCount;
 
     /**
-    * 激活日期
+    * 卡片金额（活动促销卡和正常成交卡使用）
     */
-    //@ApiModelProperty(value="激活日期")
-    private LocalDateTime activateTime;
-
-    /**
-    * 过期日期
-    */
-    //@ApiModelProperty(value="过期日期")
-    private LocalDateTime expireTime;
+    //@ApiModelProperty(value="卡片金额")
+    private BigDecimal cardAmount;
 
     /**
     * 创建时间

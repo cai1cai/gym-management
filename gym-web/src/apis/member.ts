@@ -9,20 +9,22 @@ interface MemberList {
 
 interface MemberAddParams {
     userRealName: string,
-    memberCardStatus: number,
+    memberCardType: string,
     sex: number,
     userPhone: string,
-    memberFee: number
+    remainingCount?: number,
+    cardAmount?: number
 }
 
 interface MemberEditParams {
     userId: string,
     memberCardId: string,
     userRealName: string,
-    memberCardStatus: number,
+    memberCardType: string,
     sex: number,
     userPhone: string,
-    memberFee: number
+    remainingCount?: number,
+    cardAmount?: number
 }
 
 interface MemberDeleteParams {
@@ -44,12 +46,12 @@ export const getMemberListService = ({ pageNum, pageSize }: MemberList) => {
 };
 
 
-export const addMemberService = ({userRealName, memberCardStatus, sex, userPhone, memberFee}: MemberAddParams): AxiosPromise => {
-    return request.post('/member/add', {userRealName, memberCardStatus, sex, userPhone, memberFee});
+export const addMemberService = ({userRealName, memberCardType, sex, userPhone, remainingCount, cardAmount}: MemberAddParams): AxiosPromise => {
+    return request.post('/member/add', {userRealName, memberCardType, sex, userPhone, remainingCount, cardAmount});
 }
 
-export const editMemberService = ({userId, memberCardId, userRealName, memberCardStatus, sex, userPhone, memberFee}: MemberEditParams): AxiosPromise => {
-    return request.put('/member/edit', {userId, memberCardId, userRealName, memberCardStatus, sex, userPhone, memberFee});
+export const editMemberService = ({userId, memberCardId, userRealName, memberCardType, sex, userPhone, remainingCount, cardAmount}: MemberEditParams): AxiosPromise => {
+    return request.put('/member/edit', {userId, memberCardId, userRealName, memberCardType, sex, userPhone, remainingCount, cardAmount});
 }
 
 export const deleteMemberService = ({memberCardId}: MemberDeleteParams): AxiosPromise => {

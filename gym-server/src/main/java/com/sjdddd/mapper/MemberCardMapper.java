@@ -38,7 +38,7 @@ public interface MemberCardMapper {
 
     List<MemberCard> selectByUserRealName(String userRealName);
 
-    BigDecimal selectByUserId(Object userId);
+    MemberCard selectByUserId(Object userId);
 
     void updateBalanceByUserId(Object userId, BigDecimal newBalance);
 }

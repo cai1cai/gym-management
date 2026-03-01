@@ -2,12 +2,15 @@ package com.sjdddd.service.impl;
 
 import com.sjdddd.constant.MessageConstant;
 import com.sjdddd.entity.Booking;
+import com.sjdddd.entity.Course;
+import com.sjdddd.entity.MemberCard;
 import com.sjdddd.entity.Payment;
 import com.sjdddd.exception.BaseException;
 import com.sjdddd.mapper.BookingMapper;
 import com.sjdddd.mapper.CourseMapper;
 import com.sjdddd.mapper.MemberCardMapper;
 import com.sjdddd.mapper.PaymentMapper;
+import com.sjdddd.service.MemberCardConsumeService;
 import com.sjdddd.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,53 +42,61 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private BookingMapper bookingMapper;
 
+    @Autowired
+    private MemberCardConsumeService memberCardConsumeService;
+
     @Override
     @Transactional
     public boolean processPayment(Object userId, Long courseId) {
         log.info("userId:{}, courseId:{}", userId, courseId);
 
-        BigDecimal balance = memberCardMapper.selectByUserId(userId);
-        BigDecimal courseFee = courseMapper.selectCoursePrice(courseId);
-
-        String status = courseMapper.selectCourseStatus(courseId);
-
-        if (status.equals("1")) {
-            // 课程已经被预约
+        Course course = courseMapper.selectByPrimaryKey(courseId);
+        if (course == null) {
+            throw new BaseException("课程不存在");
+        }
+        
+        MemberCard memberCard = memberCardMapper.selectByUserId(userId);
+        if (memberCard == null) {
+            throw new BaseException("会员卡信息不存在");
+        }
+        
+        // 检查是否可以消费
+        boolean canConsume = memberCardConsumeService.canConsume(memberCard, course);
+        if (!canConsume) {
+            return false;
+        }
+        
+        BigDecimal actualFee = memberCardConsumeService.calculateConsumeFee(memberCard, course);
+        
+        // 执行会员卡消费
+        boolean consumeSuccess = memberCardConsumeService.consume(memberCard, course);
+        if (!consumeSuccess) {
             return false;
         }
 
-        if (balance.compareTo(courseFee) >= 0) {
-            // 用户余额足够，处理支付
-            Booking booking = new Booking();
-            booking.setCourseId(courseId);
-            booking.setUserId(userId);
-            booking.setBookingDate(new java.util.Date());
-            booking.setIsEnrolledByCurrentUser("1");
-            log.info("booking:{}", booking);
-            bookingMapper.insert(booking);
+        // 处理预订
+        Booking booking = new Booking();
+        booking.setCourseId(courseId);
+        booking.setUserId(userId);
+        booking.setBookingDate(new java.util.Date());
+        booking.setIsEnrolledByCurrentUser("1");
+        log.info("booking:{}", booking);
+        bookingMapper.insert(booking);
 
-            // 更新课程
-            courseMapper.updateCourseStatus(courseId);
+        // 更新课程
+        courseMapper.updateCourseStatus(courseId);
 
-            // 更新用户余额
-            BigDecimal newBalance = balance.subtract(courseFee);
-            memberCardMapper.updateBalanceByUserId(userId, newBalance);
+        // 记录支付信息
+        Payment payment = new Payment();
+        payment.setUserId(userId);
+        payment.setAmount(actualFee);
+        payment.setBookingId(booking.getBookingId());
+        payment.setPaymentType("余额支付");
+        payment.setPaymentStatus("1");
+        payment.setPaymentDate(new java.util.Date());
+        paymentMapper.insert(payment);
 
-            // 记录支付信息
-            Payment payment = new Payment();
-            payment.setUserId(userId);
-            payment.setAmount(courseFee);
-            payment.setBookingId(booking.getBookingId());
-            payment.setPaymentType("余额支付");
-            payment.setPaymentStatus("1");
-            payment.setPaymentDate(new java.util.Date());
-            paymentMapper.insert(payment);
-
-            return true;
-        } else {
-            // 余额不足
-            return false;
-        }
+        return true;
     }
 
     @Override
@@ -99,11 +110,36 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BaseException(MessageConstant.NOT_EXISTS);
         }
 
-        // 退款
-        BigDecimal courseFee = courseMapper.selectCoursePrice(courseId);
-        BigDecimal balance = memberCardMapper.selectByUserId(userId);
-        BigDecimal newBalance = balance.add(courseFee);
-        memberCardMapper.updateBalanceByUserId(userId, newBalance);
+        Course course = courseMapper.selectByPrimaryKey(courseId);
+        if (course == null) {
+            throw new BaseException("课程不存在");
+        }
+        
+        MemberCard memberCard = memberCardMapper.selectByUserId(userId);
+        if (memberCard == null) {
+            throw new BaseException("会员卡信息不存在");
+        }
+        
+        // 检查是否可以退款
+        boolean canRefund = memberCardConsumeService.canConsume(memberCard, course);
+        if (!canRefund) {
+            throw new BaseException("该会员卡无法退款此项目");
+        }
+        
+        BigDecimal courseFee = course.getCourseFee();
+        BigDecimal actualFee = memberCardConsumeService.calculateConsumeFee(memberCard, course);
+        
+        // 退款：将费用返还到会员卡
+        if ("0".equals(memberCard.getMemberCardType())) {
+            // 拓客卡：增加次数
+            memberCard.setRemainingCount((memberCard.getRemainingCount() != null ? memberCard.getRemainingCount() : 0) + 1);
+        } else {
+            // 其他卡：返还金额
+            BigDecimal currentAmount = memberCard.getCardAmount() != null ? memberCard.getCardAmount() : BigDecimal.ZERO;
+            memberCard.setCardAmount(currentAmount.add(actualFee));
+        }
+        
+        memberCardMapper.updateByPrimaryKeySelective(memberCard);
 
         // 更新预订状态
         bookingMapper.updateByBookingStatus(userId, courseId);

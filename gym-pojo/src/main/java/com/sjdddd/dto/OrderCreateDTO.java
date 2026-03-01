@@ -41,4 +41,9 @@ public class OrderCreateDTO implements java.io.Serializable {
     @NotNull(message = "教练ID不能为空")
     @Positive(message = "教练ID必须为正数")
     private Long coachId;
+
+    /**
+     * 支付方式
+     */
+    private String paymentType;
 }

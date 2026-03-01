@@ -76,18 +76,20 @@ public class MemberServiceImpl implements MemberService {
 
         Long userId = userMapper.selectByUserName(memberAddDTO.getUserRealName()).getUserId();
 
-        memberCard.setMemberFee(memberAddDTO.getMemberFee());
         memberCard.setUserId(userId);
-        if (memberAddDTO.getMemberCardStatus() == null) {
-            memberCard.setMemberCardStatus("0");
+        
+        // 根据会员卡类型设置相应字段
+        if ("0".equals(memberAddDTO.getMemberCardType())) {
+            // 拓客卡：设置剩余次数
+            memberCard.setRemainingCount(memberAddDTO.getRemainingCount());
+            memberCard.setCardAmount(null);
         } else {
-            memberCard.setMemberCardStatus(memberAddDTO.getMemberCardStatus());
+            // 活动促销卡和正常成交卡：设置卡内金额
+            memberCard.setCardAmount(memberAddDTO.getCardAmount());
+            memberCard.setRemainingCount(null);
         }
-        memberCard.setActivateTime(LocalDateTime.now());
-
 
         memberCardMapper.insert(memberCard);
-        //userMapper.insertSelective()
 
         return memberCard;
     }
@@ -97,7 +99,17 @@ public class MemberServiceImpl implements MemberService {
         MemberCard memberCard = new MemberCard();
 
         BeanUtils.copyProperties(memberEditDTO, memberCard);
-        //Long memberCardId = memberCard.getMemberCardId();
+        
+        // 根据会员卡类型设置相应字段
+        if ("0".equals(memberEditDTO.getMemberCardType())) {
+            // 拓客卡：设置剩余次数
+            memberCard.setRemainingCount(memberEditDTO.getRemainingCount());
+            memberCard.setCardAmount(null);
+        } else {
+            // 活动促销卡和正常成交卡：设置卡内金额
+            memberCard.setCardAmount(memberEditDTO.getCardAmount());
+            memberCard.setRemainingCount(null);
+        }
 
         memberCardMapper.updateByPrimaryKeySelective(memberCard);
 
@@ -133,7 +145,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public BigDecimal getMemberFee(Object userId) {
+    public MemberCard getMemberCard(Object userId) {
         return memberCardMapper.selectByUserId(userId);
     }
 }

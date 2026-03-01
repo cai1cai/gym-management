@@ -27,5 +27,5 @@ public interface MemberService {
 
     PageResult searchList(Integer pageNum, Integer pageSize, String keyword);
 
-    BigDecimal getMemberFee(Object userId);
+    MemberCard getMemberCard(Object userId);
 }

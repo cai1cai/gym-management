@@ -31,7 +31,9 @@ public class MemberEditVO implements java.io.Serializable{
 
     private Date dateBirth;
 
-    private BigDecimal memberFee;
+    private String memberCardType;
 
-    private String memberCardStatus;
+    private Integer remainingCount;
+
+    private BigDecimal cardAmount;
 }
