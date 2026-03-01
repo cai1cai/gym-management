@@ -99,6 +99,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public PageResult searchList(Integer pageNum, Integer pageSize, String courseName, Object userId) {
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<Order> list = orderMapper.searchOrdersByUserAndCourse(userId, courseName);
+
+        PageInfo page = new PageInfo(list);
+
+        long total = page.getTotal();
+
+        return new PageResult(total, list);
+    }
+
+    @Override
     public List<CoachRevenueDTO> getCoachRevenue(Long coachId, String startDate, String endDate) {
         log.info("查询教练收益统计, coachId:{}, startDate:{}, endDate:{}", coachId, startDate, endDate);
         return orderMapper.selectCoachRevenue(coachId, startDate, endDate);

@@ -59,6 +59,28 @@
         ORDER BY b.booking_date DESC
     </select>
 
+    <!-- 根据用户ID和课程名称搜索订单 -->
+    <select id="searchOrdersByUserAndCourse" resultMap="OrderResultMap">
+        SELECT
+        b.booking_id, b.course_id, b.user_id, b.booking_date,
+        p.payment_id, p.amount, p.payment_date, p.payment_type, p.payment_status,
+        c.course_name,
+        u.user_real_name AS userRealName,
+        co.coach_real_name AS coachRealName
+        FROM gym_booking b
+        JOIN gym_courses c ON b.course_id = c.course_id
+        JOIN gym_coachs co ON b.coach_id = co.coach_id
+        JOIN gym_users u ON b.user_id = u.user_id
+        LEFT JOIN gym_payments p ON b.booking_id = p.booking_id
+        <where>
+            b.user_id = #{userId}
+            <if test="courseName != null and courseName != ''">
+                AND c.course_name LIKE CONCAT('%', #{courseName}, '%')
+            </if>
+        </where>
+        ORDER BY b.booking_date DESC
+    </select>
+
     <!-- 计算搜索结果的总数 -->
     <select id="countSearchedOrders" resultType="long">
         SELECT COUNT(*)

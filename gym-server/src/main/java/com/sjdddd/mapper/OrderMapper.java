@@ -21,6 +21,8 @@ public interface OrderMapper {
 
     List<Order> searchOrders(String courseName);
 
+    List<Order> searchOrdersByUserAndCourse(Object userId, String courseName);
+
     Long countTotalOrders();
 
     Long countSearchedOrders(String courseName);

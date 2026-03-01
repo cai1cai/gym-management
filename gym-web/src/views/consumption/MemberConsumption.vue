@@ -7,6 +7,7 @@
           <el-input v-model="searchName" placeholder="请输入项目名称" style="width: 200px;" :prefix-icon="Search"
                     class="search-input"></el-input>
           <el-button type="primary" @click="searchConsumption">搜索</el-button>
+          <el-button type="primary" @click="resetSearch">重置</el-button>
           <el-button @click="goBack">返回会员列表</el-button>
         </div>
       </div>
@@ -142,6 +143,12 @@ const searchConsumption = async () => {
 // 返回会员列表
 const goBack = () => {
   router.push('/member/list');
+};
+
+// 重置搜索
+const resetSearch = () => {
+  searchName.value = '';
+  fetchConsumptions();
 };
 
 // 分页大小变化

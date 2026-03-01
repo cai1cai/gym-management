@@ -19,6 +19,8 @@ public interface OrderService {
 
     PageResult searchList(Integer pageNum, Integer pageSize, String courseName);
 
+    PageResult searchList(Integer pageNum, Integer pageSize, String courseName, Object userId);
+
     PageResult listMemberBills(Integer pageNum, Integer pageSize, Object userId);
 
     /**

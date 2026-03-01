@@ -224,7 +224,7 @@ public class MemberPaymentController {
         // 暂时允许所有登录用户查看消费记录
         log.info("查询用户 {} 的消费记录，操作用户: {}", userId, tokenUserId);
         
-        PageResult pageResult = orderService.listMemberBills(pageNum, pageSize, userId);
+        PageResult pageResult = orderService.searchList(pageNum, pageSize, courseName, userId);
         return Result.success(pageResult);
     }
 }
