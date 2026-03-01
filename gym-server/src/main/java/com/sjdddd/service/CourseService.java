@@ -26,7 +26,7 @@ public interface CourseService {
 
     Course delete(Long courseId);
 
-    PageResult searchList(Integer pageNum, Integer pageSize, String courseName);
+    PageResult searchList(Integer pageNum, Integer pageSize, String courseName, Integer courseType);
 
     BigDecimal getCoursePrice(Long courseId);
 

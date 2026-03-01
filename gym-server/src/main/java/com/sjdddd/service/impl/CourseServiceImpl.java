@@ -147,10 +147,10 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public PageResult searchList(Integer pageNum, Integer pageSize, String courseName) {
+    public PageResult searchList(Integer pageNum, Integer pageSize, String courseName, Integer courseType) {
         PageHelper.startPage(pageNum, pageSize);
 
-        List<Course> list = courseMapper.selectByCourseName(courseName);
+        List<Course> list = courseMapper.selectByCourseNameAndType(courseName, courseType);
 
         PageInfo page = new PageInfo(list);
 

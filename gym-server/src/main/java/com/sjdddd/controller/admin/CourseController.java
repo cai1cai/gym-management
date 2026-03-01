@@ -92,10 +92,11 @@ public class CourseController {
     public Result<PageResult> searchCourseList(
             Integer pageNum,
             Integer pageSize,
-            @RequestParam(required = false) String courseName
+            @RequestParam(required = false) String courseName,
+            @RequestParam(required = false) Integer courseType
     ) {
 
-        PageResult pageResult = courseService.searchList(pageNum, pageSize, courseName);
+        PageResult pageResult = courseService.searchList(pageNum, pageSize, courseName, courseType);
 
         return Result.success(pageResult);
 

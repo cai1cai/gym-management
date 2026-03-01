@@ -165,9 +165,25 @@
         from gym_courses course
         left join gym_coachs coach
         on course.coach_id = coach.coach_id
-        <if test="course_name != null and course_name != ''">
+        <if test="courseName != null and courseName != ''">
             where course_name like concat('%', #{courseName, jdbcType=VARCHAR}, '%')
         </if>
+        order by course_id
+    </select>
+
+    <select id="selectByCourseNameAndType" resultMap="BaseResultMap">
+        select course.*, coach.coach_real_name
+        from gym_courses course
+        left join gym_coachs coach
+        on course.coach_id = coach.coach_id
+        <where>
+            <if test="courseName != null and courseName != ''">
+                and course_name like concat('%', #{courseName, jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="courseType != null">
+                and course_type = #{courseType, jdbcType=INTEGER}
+            </if>
+        </where>
         order by course_id
     </select>
 

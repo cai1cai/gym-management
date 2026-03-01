@@ -4,7 +4,8 @@ import {AxiosPromise} from "axios";
 interface CourseList {
     pageNum: number,
     pageSize: number,
-    courseName?: string
+    courseName?: string,
+    courseType?: number
 }
 
 // interface CoachList {
@@ -16,6 +17,7 @@ interface CourseAddParams {
     courseName: string,
     coachRealName: string,
     courseFee: number,
+    courseType: number,
     scheduleStart: Date,
     scheduleEnd: Date,
 }
@@ -56,8 +58,8 @@ export const getCourseListService = ({ pageNum, pageSize }: CourseList) => {
 };
 
 
-export const addCourseService = ({courseName, coachRealName,  courseFee, scheduleStart, scheduleEnd}: CourseAddParams): AxiosPromise => {
-    return request.post('/course/add', {courseName, coachRealName,  courseFee, scheduleStart, scheduleEnd});
+export const addCourseService = ({courseName, coachRealName, courseFee, courseType, scheduleStart, scheduleEnd}: CourseAddParams): AxiosPromise => {
+    return request.post('/course/add', {courseName, coachRealName, courseFee, courseType, scheduleStart, scheduleEnd});
 }
 
 export const editCourseService = ({courseId, courseName, coachRealName, coachId, courseFee, courseType, scheduleStart, scheduleEnd}: CourseEditParams): AxiosPromise => {
@@ -72,13 +74,14 @@ export const deleteCourseService = ({courseId}: CourseDeleteParams): AxiosPromis
     });
 }
 
-export const searchCourseService = ({pageNum, pageSize, courseName}: CourseList) => {
-    console.log(pageNum, pageSize, courseName)
+export const searchCourseService = ({pageNum, pageSize, courseName, courseType}: CourseList) => {
+    console.log(pageNum, pageSize, courseName, courseType)
     return request.get('/course/search', {
         params: {
             pageNum,
             pageSize,
-            courseName
+            courseName,
+            courseType
         }
     });
 };

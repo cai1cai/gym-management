@@ -37,6 +37,8 @@ public interface CourseMapper {
 
     List<Course> selectByCourseName(String courseName);
 
+    List<Course> selectByCourseNameAndType(String courseName, Integer courseType);
+
     BigDecimal selectCoursePrice(Long courseId);
 
     void updateCourseStatus(Long courseId);

@@ -7,7 +7,12 @@
         <div class="extra">
           <el-input v-model="searchName" placeholder="请输入项目名" style="width: 200px;" :prefix-icon="Search"
                     class="search-input"></el-input>
-          <el-button type="primary" @click="searchCourse">搜索</el-button>
+          <el-select v-model="selectedCourseType" placeholder="请选择项目类型" style="width: 150px; margin-left: 10px;" clearable>
+            <el-option label="全部类型" value=""></el-option>
+            <el-option label="身体项目" :value="0"></el-option>
+            <el-option label="面部项目" :value="1"></el-option>
+          </el-select>
+          <el-button type="primary" @click="searchCourse" style="margin-left: 10px;">搜索</el-button>
           <el-button type="primary" @click="addCourse">添加项目</el-button>
         </div>
       </div>
@@ -412,12 +417,14 @@ const addNewCourse = async () => {
 
 // 搜索项目
 const searchName = ref('');
+const selectedCourseType = ref('');
 const searchCourse = async () => {
   try {
     const courseName = searchName.value;
+    const courseType = selectedCourseType.value;
     const pageNum = pagination.value.currentPage;
     const pageSize = pagination.value.pageSize;
-    const response = await searchCourseService({pageNum, pageSize, courseName});
+    const response = await searchCourseService({pageNum, pageSize, courseName, courseType});
     courses.value = response.data.data.items; // 使用搜索结果更新列表
   } catch (error) {
     console.error('搜索项目失败:', error);
