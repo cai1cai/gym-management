@@ -182,4 +182,49 @@ public class MemberPaymentController {
 
         return Result.success(pageResult);
     }
+
+    /**
+     * 获取会员消费记录
+     */
+    @GetMapping("/consumption/list")
+    @OperationLog(operDesc = "获取会员消费记录")
+    public Result<PageResult> getMemberConsumption(
+            @RequestParam Integer pageNum,
+            @RequestParam Integer pageSize,
+            @RequestParam String userId,
+            HttpServletRequest request
+    ) {
+        String token = request.getHeader(jwtProperties.getUserTokenName());
+        Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
+        Object tokenUserId = claims.get(JwtClaimsConstant.USER_ID);
+        
+        // 暂时允许所有登录用户查看消费记录
+        log.info("查询用户 {} 的消费记录，操作用户: {}", userId, tokenUserId);
+        
+        PageResult pageResult = orderService.listMemberBills(pageNum, pageSize, userId);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 搜索会员消费记录
+     */
+    @GetMapping("/consumption/search")
+    @OperationLog(operDesc = "搜索会员消费记录")
+    public Result<PageResult> searchMemberConsumption(
+            @RequestParam Integer pageNum,
+            @RequestParam Integer pageSize,
+            @RequestParam String userId,
+            @RequestParam(required = false) String courseName,
+            HttpServletRequest request
+    ) {
+        String token = request.getHeader(jwtProperties.getUserTokenName());
+        Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
+        Object tokenUserId = claims.get(JwtClaimsConstant.USER_ID);
+        
+        // 暂时允许所有登录用户查看消费记录
+        log.info("查询用户 {} 的消费记录，操作用户: {}", userId, tokenUserId);
+        
+        PageResult pageResult = orderService.listMemberBills(pageNum, pageSize, userId);
+        return Result.success(pageResult);
+    }
 }

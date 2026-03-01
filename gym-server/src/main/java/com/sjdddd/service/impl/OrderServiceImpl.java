@@ -122,11 +122,11 @@ public class OrderServiceImpl implements OrderService {
             throw new BaseException("课程不存在");
         }
 
-        // 2. 检查该会员是否已预订此课程
-        Booking existingBooking = bookingMapper.selectByUserIdAndCourseId(orderCreateDTO.getUserId(), orderCreateDTO.getCourseId());
-        if (existingBooking != null) {
-            throw new BaseException("该会员已预订此课程，请勿重复预订");
-        }
+        // 2. 检查该会员是否已预订此课程（允许重复预订）
+        // Booking existingBooking = bookingMapper.selectByUserIdAndCourseId(orderCreateDTO.getUserId(), orderCreateDTO.getCourseId());
+        // if (existingBooking != null) {
+        //     throw new BaseException("该会员已预订此课程，请勿重复预订");
+        // }
 
         // 3. 获取会员卡信息
         MemberCard memberCard = memberCardMapper.selectByUserId(orderCreateDTO.getUserId());

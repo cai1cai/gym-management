@@ -42,6 +42,9 @@ const routes: Array<RouteRecordRaw> = [
             },
             {
                 path: '/order/coach/revenue', component: () => import('../views/order/CoachRevenue.vue')
+            },
+            {
+                path: '/member-consumption', component: () => import('../views/consumption/MemberConsumption.vue')
             }
         ]
     },

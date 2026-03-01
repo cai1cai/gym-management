@@ -26,14 +26,20 @@ public class Bill {
 
     private Object userId;
 
+    private Date bookingDate;
+
     private Date paymentDate;
 
     private BigDecimal amount;
 
     private String paymentType;
 
-    private BigDecimal memberFee;
+    private String paymentStatus;
 
     private String courseName;
+
+    private String userRealName;
+
+    private String coachRealName;
 
 }

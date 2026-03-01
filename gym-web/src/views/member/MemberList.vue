@@ -51,10 +51,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="120" align="center" fixed="right">
+      <el-table-column label="操作" width="180" align="center" fixed="right">
         <template #default="{ row }">
-          <el-button type="primary" size="mini" @click="handleEdit(row)" :icon="Edit" circle plain></el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row)" :icon="Delete" circle plain></el-button>
+          <el-button type="info" size="mini" @click="handleDetail(row)" :icon="Document" circle plain title="消费明细"></el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(row)" :icon="Edit" circle plain title="编辑"></el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(row)" :icon="Delete" circle plain title="删除"></el-button>
         </template>
       </el-table-column>
 
@@ -175,10 +176,11 @@ import {
 } from '@/apis/member';
 import {ElMessage, ElMessageBox} from "element-plus";
 import {ref, onMounted} from "vue";
-import {Delete, Edit, Search} from "@element-plus/icons-vue";
-import { useRoute } from 'vue-router'
+import {Delete, Edit, Search, Document} from "@element-plus/icons-vue";
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 
 
 const members = ref([]); // 定义 members
@@ -464,6 +466,25 @@ const onAddCardTypeChange = (value) => {
   } else if (value === '1' || value === '2') {
     addFormData.value.cardAmount = 0; // 其他卡默认金额0
   }
+};
+
+// 测试明细按钮
+const testDetail = (row) => {
+  console.log('测试明细按钮点击，会员数据：', row);
+  alert(`点击了会员 ${row.userRealName} 的明细按钮`);
+};
+
+// 查看会员消费明细
+const handleDetail = (row) => {
+  console.log('点击明细按钮，会员信息：', row);
+  // 跳转到消费记录页面，传递用户ID和姓名
+  router.push({
+    path: '/member-consumption',
+    query: {
+      userId: row.userId,
+      userName: row.userRealName
+    }
+  });
 };
 
 // 搜索会员
