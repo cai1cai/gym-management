@@ -21,6 +21,6 @@ services:
     image: gym-server:latest
     build: .
     ports:
-      - "8081:8081"
+      - "8083:8081"  # develop分支修改：改为8083端口
     depends_on:
       - mysql
