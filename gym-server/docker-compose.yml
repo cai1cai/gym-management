@@ -21,6 +21,6 @@ services:
     image: gym-server:latest
     build: .
     ports:
-      - "8081:8081"
+      - "8082:8082"
     depends_on:
       - mysql
