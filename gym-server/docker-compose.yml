@@ -21,6 +21,6 @@ services:
     image: gym-server:latest
     build: .
     ports:
-      - "8081:8081"
+      - "8082:8081"  # test_two分支修改：改为8082端口
     depends_on:
       - mysql
